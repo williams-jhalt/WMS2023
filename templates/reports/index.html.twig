@@ -1,0 +1,282 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }} 
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var reports = $.parseJSON('{{ reports|json_encode|raw }}');
+
+            var createBarGraphAvgOrdersPerDay = function () {
+
+                return function (data) {
+
+                    var el = $('<div>').height('250px');
+
+                    var panel = $('<div>').addClass('panel panel-default')
+                            .append($('<div>').addClass('panel-heading').html('Average Orders Per Day'))
+                            .append($('<div>').addClass('panel-body')
+                                    .append(el));
+
+                    $('#ordersPerDay').append(panel);
+
+                    Morris.Bar({
+                        resize: true,
+                        element: el,
+                        data: data,
+                        xkey: 'label',
+                        ykeys: ['muffs', 'williams'],
+                        labels: ['Muffs', 'Williams']
+                    });
+
+                };
+            };
+
+            var createBarGraphAvgDaysToShip = function () {
+
+                return function (data) {
+
+                    var el = $('<div>').height('250px');
+
+                    var panel = $('<div>').addClass('panel panel-default')
+                            .append($('<div>').addClass('panel-heading').html('Average Days To Ship'))
+                            .append($('<div>').addClass('panel-body')
+                                    .append(el));
+
+                    $('#daysToShip').append(panel);
+
+                    Morris.Bar({
+                        resize: true,
+                        element: el,
+                        data: data,
+                        xkey: 'label',
+                        ykeys: ['muffs', 'williams'],
+                        labels: ['Muffs', 'Williams']
+                    });
+
+                };
+            };
+
+            var createDonutShippingMethods = function () {
+
+                return function (data) {
+
+                    var el = $('<div>').height('250px');
+
+                    var panel = $('<div>').addClass('panel panel-default')
+                            .append($('<div>').addClass('panel-heading').html('Shipping Methods Used (Williams)'))
+                            .append($('<div>').addClass('panel-body')
+                                    .append(el));
+
+                    $('#williamsShippingMethods').append(panel);
+
+                    Morris.Donut({
+                        resize: true,
+                        element: el,
+                        data: data['williams']
+                    });
+
+                    var el = $('<div>').height('250px');
+
+                    var panel = $('<div>').addClass('panel panel-default')
+                            .append($('<div>').addClass('panel-heading').html('Shipping Methods Used (Muffs)'))
+                            .append($('<div>').addClass('panel-body')
+                                    .append(el));
+
+                    $('#muffsShippingMethods').append(panel);
+
+                    Morris.Donut({
+                        resize: true,
+                        element: el,
+                        data: data['muffs']
+                    });
+
+                };
+
+            };
+
+            var createLineGraphOrdersPerHour = function () {
+
+                return function (data) {
+
+                    var el = $('<div>').height('250px');
+
+                    var panel = $('<div>').addClass('panel panel-default')
+                            .append($('<div>').addClass('panel-heading').html('Orders Per Hour'))
+                            .append($('<div>').addClass('panel-body')
+                                    .append(el));
+
+                    $('#ordersPerHour').append(panel);
+
+                    Morris.Line({
+                        resize: true,
+                        element: el,
+                        data: data,
+                        parseTime: false,
+                        xkey: 'label',
+                        ykeys: ['muffs', 'williams'],
+                        labels: ['Muffs', 'Williams']
+                    });
+
+                };
+            };
+
+            var createProductTables = function () {
+
+                return function (data) {
+
+
+
+                    var result = [];
+
+                    for (var company in data) {
+                        if (!(company in result)) {
+                            result[company] = {ordered: 0, shipped: 0};
+                        }
+                        for (var key in data[company]) {
+                            result[company]['ordered'] += data[company][key]['quantity_ordered'];
+                            result[company]['shipped'] += data[company][key]['quantity_shipped'];
+                        }
+                    }
+
+                    var response = [];
+
+                    for (var company in result) {
+                        response[company] = new Number(result[company]['shipped'] / result[company]['ordered']).toFixed(4);
+                    }
+                    
+                    $('#muffsFulfilmentRate').html(((response['muffs'] * 100)).toPrecision(4) + "%");
+                    $('#williamsFulfilmentRate').html(((response['williams'] * 100)).toPrecision(4) + "%");
+
+                    var muffsData = new Array();
+
+                    for (var key in data['muffs']) {
+                        muffsData.push([
+                            data['muffs'][key]['sku'],
+                            data['muffs'][key]['name'],
+                            data['muffs'][key]['quantity_ordered'],
+                            data['muffs'][key]['quantity_shipped']
+                        ]);
+                    }
+
+                    $('#muffsProductsTable').DataTable({
+                        data: muffsData,
+                        columns: [
+                            {title: "SKU"},
+                            {title: "Name"},
+                            {title: "Qty Ordered"},
+                            {title: "Qty Shipped"}
+                        ]
+                    });
+
+                    var williamsData = new Array();
+
+                    for (var key in data['williams']) {
+                        williamsData.push([
+                            data['williams'][key]['sku'],
+                            data['williams'][key]['name'],
+                            data['williams'][key]['quantity_ordered'],
+                            data['williams'][key]['quantity_shipped']
+                        ]);
+                    }
+
+                    $('#williamsProductsTable').DataTable({
+                        data: williamsData,
+                        columns: [
+                            {title: "SKU"},
+                            {title: "Name"},
+                            {title: "Qty Ordered"},
+                            {title: "Qty Shipped"}
+                        ]
+                    });
+
+                };
+            };
+
+            for (var i = 0; i < reports.length; i++) {
+
+                if (reports[i]['type'] == 'avgOrdersPerDay') {
+                    $.getJSON(reports[i]['filename'], createBarGraphAvgOrdersPerDay());
+                }
+
+                if (reports[i]['type'] == 'avgDaysToShip') {
+                    $.getJSON(reports[i]['filename'], createBarGraphAvgDaysToShip());
+                }
+
+                if (reports[i]['type'] == 'ordersPerHour') {
+                    $.getJSON(reports[i]['filename'], createLineGraphOrdersPerHour());
+                }
+
+                if (reports[i]['type'] == 'shippingMethods') {
+                    $.getJSON(reports[i]['filename'], createDonutShippingMethods());
+                }
+
+                if (reports[i]['type'] == 'products') {
+                    $.getJSON(reports[i]['filename'], createProductTables());
+                }
+
+            }
+            ;
+
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="row">
+
+        <div class="col-lg-12">
+            <h1 class="page-header">Dashboard (Showing last two weeks)
+            </h1>
+        </div>
+
+        <div id="daysToShip" class="col-sm-12"></div>
+        <div id="ordersPerDay" class="col-sm-12"></div>
+        <div id="ordersPerHour" class="col-sm-12"></div>
+        <div id="williamsShippingMethods" class="col-sm-6"></div>
+        <div id="muffsShippingMethods" class="col-sm-6"></div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Muffs and Cuffs Fulfilment Rate
+                </div>
+                <div class="panel-body">
+                    <div id="muffsFulfilmentRate" class="text-center" style="font-weight:bold;font-size:48pt;"></div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Williams Trading Fulfilment Rate
+                </div>
+                <div class="panel-body">
+                    <div id="williamsFulfilmentRate" class="text-center" style="font-weight:bold;font-size:48pt;"></div>
+                </div>
+            </div>
+        </div>
+        <div id="muffsProducts" class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Muffs and Cuffs Products
+                </div>
+                <div class="panel-body">
+                    <table id="muffsProductsTable" class="table table-bordered"></table>
+                </div>
+            </div>
+        </div>
+        <div id="williamsProducts" class="col-sm-12">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Williams Trading Products
+                </div>
+                <div class="panel-body">
+                    <table id="williamsProductsTable" class="table table-bordered"></table>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("input[name='searchTerms']").focus();
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header">Product Lookup</h1>
+    </div>
+
+    <br> 
+
+    <form class="form-inline" action="{{ path('product_lookup_search') }}" method="get">
+        <div class="form-group">
+            <input class="form-control" type="text" name="searchTerms" placeholder="SKU or Barcode">
+        </div>
+        <button class="btn btn-default" type="submit">Search</button>
+    </form>
+
+    <br>
+
+    {% for item in items %}
+
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <b><a href="{{ path('product_lookup_edit', {id: item.id, searchTerms: app.request.get('searchTerms')}) }}">{{ item.itemNumber }}</a></b> - {{ item.name }}
+            </div>
+            <div class="panel-body">
+                <div class="col-sm-3">
+                    {% if item.attachments|length > 0 %}
+                        <img class="img-responsive" src="{{ item.attachments[0].url }}" style="max-height: 150px;">
+                    {% endif %}
+                </div>
+                <div class="col-sm-6">{{ item.detail.description }}</div>
+                <div class="col-sm-3">
+                    <b>Bin:</b> {{ item.binLocation }}<br>
+                    <b>In Stock:</b> {{ item.quantityOnHand }}<br>
+                    <b>Committed:</b> {{ item.quantityCommitted }}<br>
+                    <b>Available:</b> {{ item.quantityOnHand - item.quantityCommitted }}<br>
+                    <b>Height:</b> {{ item.detail.packageHeight }}<br>
+                    <b>Length:</b> {{ item.detail.packageLength }}<br>
+                    <b>Width:</b> {{ item.detail.packageWidth }}<br>
+                    <b>Weight:</b> {{ item.detail.packageWeight }}
+                </div>
+            </div>
+        </div>
+
+        <hr>
+
+    {% endfor %}
+
+    <p><a href="{{ path('product_lookup_index') }}">Back</a></p>
+
+{% endblock %}

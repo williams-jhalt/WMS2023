@@ -1,0 +1,7 @@
+<form class="form-inline" action="{{ path('catalog_search') }}" method="get">
+    <div class="form-group">
+        <input class="form-control" type="text" name="searchTerms" placeholder="SKU, Barcode or Search Terms..." value="{{ app.request.get('searchTerms') }}">
+    </div>
+    <button class="btn btn-primary" type="submit">Search</button>
+    <a class="btn btn-default" href="{{ path('catalog_homepage') }}">Clear</a>
+</form>

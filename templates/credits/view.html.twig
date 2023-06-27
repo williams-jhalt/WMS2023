@@ -1,0 +1,84 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("input[name='manifestId']").focus();
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+
+    <h1 class="page-header">Credit Builder</h1>
+
+    <br>
+
+    <form class="form-inline" id="inputForm" action="{{ path('credits_list') }}" method="post">
+        <div class="form-group">
+            <input class="form-control" type="text" name="manifestId" placeholder="Manifest ID" required>
+        </div>
+        <button class="btn btn-default" type="submit">Submit</button>
+    </form>
+
+    <br>
+
+    <div class="row">
+
+        <h2>Credit Calculator for Sales Order: {{ creditEstimate.salesOrder.orderNumber }}</h2>
+
+        <div class="col-sm-6">
+
+            <h3>Shipping Address</h3>
+
+            <address>
+                {{ creditEstimate.salesOrder.shipToName }}<br>
+                {{ creditEstimate.salesOrder.shipToAddress1 }}<br>
+                {% if creditEstimate.salesOrder.shipToAddress2 %}{{ creditEstimate.salesOrder.shipToAddress2 }}<br>{% endif %}
+                {{ creditEstimate.salesOrder.shipToCity }}, {{ creditEstimate.salesOrder.shipToState }} {{ creditEstimate.salesOrder.shipToZip }}<br>
+                {{ creditEstimate.salesOrder.shipToCountry }}
+            </address>
+
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <th>Estimated Weight</th>
+                        <td>{{ creditEstimate.totalWeight }} lbs</td>
+                    </tr>
+                </tbody>        
+            </table>
+
+        </div>
+
+        <div class="col-sm-6">
+
+            <h3>Items</h3>
+
+            <table class="table table-condensed table-bordered">
+                <thead>
+                    <tr>
+                        <th class="col-xs-8">Item Number</th>
+                        <th class="col-xs-2">Quantity</th>
+                        <th class="col-xs-2">Weight</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in creditEstimate.salesOrderItems %}
+                        <tr>
+                            <td>{{ item.itemNumber }}</td>
+                            <td>{{ item.quantityOrdered }}</td>
+                            <td>{{ creditEstimate.getItemWeight(item) }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -1,0 +1,75 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("input[name='manifestId']").focus();
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header">Dim Watcher</h1>
+    </div>
+
+    <br>
+
+    <form class="form-inline" id="inputForm" action="{{ path('dimwatcher_list') }}" method="post">
+        <div class="form-group">
+            <input class="form-control" type="text" name="manifestId" placeholder="Manifest ID" required>
+        </div>
+        <button class="btn btn-default" type="submit">Submit</button>
+    </form>
+
+    <br>
+
+    <h3>Results</h3>
+
+    <table width="50%">
+        <thead>
+            <tr>
+                <th>Tracking Number / UCC / Dimensions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for carton in order.cartons %}
+                <tr>
+                    <td>
+                        <table class="table table-bordered table-condensed table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>Tracking Number</th>
+                                    <td>{{ carton.trackingNumber }}</td>
+                                </tr>
+                                <tr>
+                                    <th>UCC</th>
+                                    <td>{{ carton.ucc }}</td>
+                                </tr>
+                                <tr>
+                                    <th>Height</th>
+                                    <td>{{ carton.packageHeight }} in</td>
+                                </tr>
+                                <tr>
+                                    <th>Length</th>
+                                    <td>{{ carton.packageLength }} in</td>
+                                </tr>
+                                <tr>
+                                    <th>Width</th>
+                                    <td>{{ carton.packageWidth }} in</td>
+                                </tr>
+                                <tr>
+                                    <th>Weight</th>
+                                    <td>{{ carton.shippingWeight }} lbs</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

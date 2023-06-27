@@ -1,19 +1,124 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text></svg>">
-        {# Run `composer require symfony/webpack-encore-bundle` to start using Symfony UX #}
-        {% block stylesheets %}
-            {{ encore_entry_link_tags('app') }}
-        {% endblock %}
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>{% block title %}WMS{% endblock %}</title>
+            <!-- Bootstrap Core CSS -->
+            <link href="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
 
-        {% block javascripts %}
-            {{ encore_entry_script_tags('app') }}
+            <!-- Bootstrap Datepicker CSS -->
+            <link href="{{ asset('web_assets/bootstrap-datepicker-master/dist/css/bootstrap-datepicker.min.css') }}" rel="stylesheet">
+
+            <!-- MetisMenu CSS -->
+            <link href="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/metisMenu/metisMenu.min.css') }}" rel="stylesheet">
+
+            <!-- Custom CSS -->
+            <link href="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/dist/css/sb-admin-2.css') }}" rel="stylesheet">
+
+            <!-- Morris Charts CSS -->
+            <link href="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/morrisjs/morris.css') }}" rel="stylesheet">
+
+            <!-- Custom Fonts -->
+            <link href="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+
+            <!-- DataTables -->
+            <link href="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/datatables/css/dataTables.bootstrap.min.css') }}" rel="stylesheet" type="text/css">
+            <link href="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/datatables-responsive/dataTables.responsive.css') }}" rel="stylesheet" type="text/css">
+
+            <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+            <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+            <!--[if lt IE 9]>
+                <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+                <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+            <![endif]-->
+
+        {% block stylesheets %}
         {% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
     </head>
     <body>
-        {% block body %}{% endblock %}
+
+        <div id="wrapper">
+
+            <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="{{ path('homepage') }}">Warehouse Management System</a>
+                </div>
+
+                <div class="navbar-default sidebar" role="navigation">
+                    <div class="sidebar-nav navbar-collapse">
+                        <ul class="nav" id="side-menu">
+                            <li><a href="{{ path('reports_index') }}">Dashboard</a></li>
+                            <li><a href="{{ path('document_tracker_index') }}">Document Tracker</a></li>
+                            <li><a href="{{ path('packer_log_index') }}">Packer Log</a></li>
+                            <li><a href="{{ path('picker_log_index') }}">Picker Log</a></li>
+                            <li><a href="{{ path('picker_log_single_pick') }}">Picker Log (Single)</a></li>
+                            <li><a href="{{ path('product_lookup_index') }}">Product Lookup</a></li>
+                            <li><a href="{{ path('sales_orders_index') }}">Order Lookup</a></li>
+                            <li><a href="{{ path('sales_orders_index_mfg') }}">Order Lookup (MFG)</a></li>
+                            <li><a href="{{ path('product_lookup_committed') }}">Committed Products</a></li>
+                            <li><a href="{{ path('shipments_index') }}">Open Shipment Report</a></li>
+                            <li><a href="{{ path('logicbroker_customer_index') }}">Logicbroker Customers</a></li>
+                            <li><a href="{{ path('logicbroker_orderstatus_index') }}">Logicbroker Orders</a></li>
+                            <li><a href="{{ path('catalog_homepage') }}">Catalog</a></li>
+                            <li><a href="{{ path('credits_index') }}">Credit Builder</a></li>
+                            <li><a href="{{ path('shipping_index') }}">Shipping</a></li>
+                            <li><a href="{{ path('dimwatcher_index') }}">Dim Watcher</a></li>
+                            <li><a href="{{ path('sales_list_index') }}">Sales List</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </nav>
+
+            <div id="page-wrapper" style="min-height: 879px;">
+                <div class="row">
+                    {% block body %}
+                    {% endblock %}
+                </div>
+            </div>
+
+        </div> 
+
+            <!-- jQuery -->
+            <script src="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/jquery/jquery.min.js') }}"></script>
+
+            <!-- Bootstrap Core JavaScript -->
+            <script src="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/bootstrap/js/bootstrap.min.js') }}"></script>
+
+            <!-- Bootstrap Datepicker JavaScript -->
+            <script src="{{ asset('web_assets/bootstrap-datepicker-master/dist/js/bootstrap-datepicker.min.js') }}"></script>
+
+            <!-- Metis Menu Plugin JavaScript -->
+            <script src="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/metisMenu/metisMenu.min.js') }}"></script>
+
+            <!-- Morris Charts JavaScript -->
+            <script src="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/raphael/raphael.min.js') }}"></script>
+            <script src="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/morrisjs/morris.min.js') }}"></script>
+
+            <!-- Custom Theme JavaScript -->
+            <script src="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/dist/js/sb-admin-2.js') }}"></script>
+
+            <!-- DataTables JavaScript -->
+            <script src="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/datatables/js/jquery.dataTables.min.js') }}"></script>
+            <script src="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/datatables/js/dataTables.bootstrap.min.js') }}"></script>
+            <script src="{{ asset('web_assets/startbootstrap-sb-admin-2-gh-pages/vendor/datatables-responsive/dataTables.responsive.js') }}"></script>
+
+            <!-- FOS JS Routing -->
+            <script src="{{ asset('bundles/fosjsrouting/js/router.js') }}"></script>
+            <script src="{{ path('fos_js_routing_js', {'callback': 'fos.Router.setData'}) }}"></script>
+
+
+        {% block javascripts %}   
+        {% endblock %}
+
     </body>
 </html>

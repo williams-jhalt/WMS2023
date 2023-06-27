@@ -1,0 +1,92 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            var table = $('#shipmentsTable').DataTable({
+                "processing": true,
+                "serverSide": true,
+                "ajax": Routing.generate('shipments_list')
+            });
+            
+            var isPackedChecked = false;
+            var isPickedChecked = false;
+            var isShippedChecked = false;
+            
+            $("input[name='is_packed']").click(function() {
+                table.ajax.url(Routing.generate('shipments_list', {is_packed: this.checked, is_picked: isPickedChecked, is_shipped: isShippedChecked})).load();
+                isPackedChecked = this.checked;
+            });
+            
+            $("input[name='is_shipped']").click(function() {
+                table.ajax.url(Routing.generate('shipments_list', {is_shipped: this.checked, is_picked: isPickedChecked, is_packed: isPackedChecked})).load();
+                isShippedChecked = this.checked;
+            });
+            
+            $("input[name='is_picked']").click(function() {
+                table.ajax.url(Routing.generate('shipments_list', {is_picked: this.checked, is_packed: isPackedChecked, is_shipped: isShippedChecked})).load();
+                isPickedChecked = this.checked;
+            });
+        });
+    </script>
+{% endblock %}
+
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header">Shipments</h1>
+    </div>
+
+    <br>
+
+    <form class="form">
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="is_shipped" value="true">
+                Only Show Shipped Orders
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="is_packed" value="true">
+                Only Show Packed Orders
+            </label>
+        </div>
+        <div class="checkbox">
+            <label>
+                <input type="checkbox" name="is_picked" value="true">
+                Only Show Picked Orders
+            </label>
+        </div>
+    </form>
+
+    <br>
+
+    <h2>Open Shipments</h2>
+
+    <table id="shipmentsTable" class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>Manifest ID</th>
+                <th>Weborder</th>
+                <th>Order Date</th>
+                <th>Picked</th>
+                <th>Packed</th>
+                <th>Shipped</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Manifest ID</th>
+                <th>Weborder</th>
+                <th>Order Date</th>
+                <th>Picked</th>
+                <th>Packed</th>
+                <th>Shipped</th>
+            </tr>
+        </tfoot>
+    </table>
+
+{% endblock %}

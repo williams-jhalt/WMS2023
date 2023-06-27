@@ -1,0 +1,95 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+
+        function updateList() {
+            $.get('{{ path('document_tracker_list') }}', function (data) {
+                $('#list').html(data);
+            });
+        }
+
+        function worker() {
+            updateList();
+            setTimeout(worker, 5000);
+        }
+
+        $(document).ready(function () {
+            $("input[name='user']").focus();
+            $("input[name='user']").keypress(function (e) {
+                var key = e.which;
+                if (key === 13) {
+                    $("input[name='documentAction']").focus();
+                    return false;
+                }
+            });
+            $("input[name='documentAction']").keypress(function (e) {
+                var key = e.which;
+                if (key === 13) {
+                    $("input[name='orderNumber']").focus();
+                    return false;
+                }
+            });
+            var timeout;
+            $("#inputForm").submit(function (event) {
+                clearTimeout(timeout);
+                $("#messages").hide();
+                $.post('{{ path('document_tracker_scan') }}', $(this).serialize(), function (data) {
+                    var messages = $.parseJSON(data).messages;
+                    if (messages.length > 0) {
+                        message = "";
+                        for (i = 0; i < messages.length; i++) {
+                            message = message + "\n" + messages[i];
+                        }
+                        $("#messages").text(message).show();
+                        setTimeout(function () {
+                            $("#messages").hide();
+                        }, 5000);
+                    }
+                    updateList();
+                    timeout = setTimeout(function() {
+                        $("input[name='user']").val('');
+                        $("input[name='documentAction']").val('');
+                        $("input[name='user']").focus();                        
+                    }, 15000);
+                    $("input[name='orderNumber']").val('');
+                    $("input[name='orderNumber']").focus();
+                });
+                event.preventDefault();
+            });
+            setTimeout(worker, 10);
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header">Document Tracker</h1>
+    </div>
+    
+    {{ knp_menu_render('AppBundle:Builder:documentLogMenu', {'currentClass': 'active'}) }}    
+
+    <div id="messages" class="alert alert-info" style="display:none;"></div>
+    
+    <br>
+
+    <form class="form-inline" id="inputForm" action="{{ path('document_tracker_scan') }}" method="post">
+        <div class="form-group">
+            <input class="form-control" type="text" name="user" placeholder="User" required>
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="documentAction" placeholder="Action" required>
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="text" name="orderNumber" placeholder="Order Number" required>
+        </div>               
+        <button class="btn btn-default" type="submit">Submit</button>
+    </form>
+        
+    <br>
+
+    <div id="list"></div>    
+
+{% endblock %}

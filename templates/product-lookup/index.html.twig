@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("input[name='searchTerms']").focus();
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header">Product Lookup</h1>
+    </div>
+
+    <br>
+
+    <form class="form-inline" action="{{ path('product_lookup_search') }}" method="get">
+        <div class="form-group">
+            <input class="form-control" type="text" name="searchTerms" placeholder="SKU or Barcode">
+        </div>
+        <button class="btn btn-default" type="submit">Search</button>
+    </form>
+
+{% endblock %}

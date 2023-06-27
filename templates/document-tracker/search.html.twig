@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header">Document Tracker</h1>
+    </div>
+    
+    {{ knp_menu_render('AppBundle:Builder:documentLogMenu', {'currentClass': 'active'}) }}    
+
+    <br>
+
+    <form class="form" action="{{ path('document_tracker_search') }}">
+        <div class="row">
+            <div class="form-group col-sm-3">
+                <input class="form-control" type="text" name="searchTerms" placeholder="Search...">            
+            </div>
+            <div class="form-group col-sm-3">
+                <div class="input-group date" data-provide="datepicker">
+                    <input type="text" name="startDate" placeholder="From..." class="form-control">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-sm-3">
+                <div class="input-group date" data-provide="datepicker">
+                    <input type="text" class="form-control" name="endDate" placeholder="To...">
+                    <div class="input-group-addon">
+                        <span class="glyphicon glyphicon-calendar"></span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-default" type="submit">Search</button>
+        </div>
+    </form>
+
+    <br>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Order Number</th>
+                <th>User</th>
+                <th>Action</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for scan in scans %}
+                <tr>
+                    <td>{{ scan.orderNumber }}</td>
+                    <td>{{ scan.user }}</td>
+                    <td>{{ scan.documentAction }}</td>
+                    <td>{{ scan.timestamp|date('D, d M Y h:i:s a') }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

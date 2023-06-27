@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header">Catalog Manager</h1>
+        
+        {% include 'catalog/search_form.html.twig' %}
+        
+        <h2>Results</h2>
+
+        {% for product in products %}
+            <div>
+                <div class="pull-right"><a class="btn btn-danger" href="{{ path('catalog_remove', {id: product.id, searchTerms: searchTerms}) }}">Remove</a></div>
+                <p><a href="{{ path('catalog_edit', {id: product.id, searchTerms: searchTerms}) }}">{{ product.itemNumber }} - {{ product.name }}</a></p>
+                {% if product.detail %}
+                    <p>{{ product.detail.description }}</p>
+                {% else %}
+                    <p><b>No product details have been created yet.</b></p>
+                {% endif %}
+            </div>
+            <hr>
+        {% endfor %}
+
+    </div> 
+
+{% endblock %}

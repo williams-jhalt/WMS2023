@@ -1,0 +1,118 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("input[name='manifestId']").focus();
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header">Sales Orders</h1>
+    </div>
+
+    <br>
+
+    <form class="form-inline" id="inputForm" action="{{ path('sales_orders_list') }}" method="post">
+        <div class="form-group">
+            <input class="form-control" type="text" name="manifestId" placeholder="Manifest ID" required>
+        </div>
+        <button class="btn btn-default" type="submit">Submit</button>
+    </form>
+
+    <br>
+
+    <h2>Viewing Order {{ order.orderNumber }}</h2>
+    
+    <h3>Summary</h3>
+    
+    <table class="table table-bordered">
+        <tbody>
+            <tr>
+                <th>Total Volume</th>
+                <td>{{ order.totalVolume }} cu in</td>
+            </tr>
+            <tr>
+                <th>Total Weight</th>
+                <td>{{ order.totalWeight }} lbs</td>
+            </tr>
+            <tr>
+                <th>Total Freight Cost</th>
+                <td>${{ order.totalFreightCost|number_format(2) }}</td>
+            </tr>
+        </tbody>        
+    </table>
+
+    <h3>Cartons</h3>
+
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Tracking Number / UCC</th>
+                <th>Items</th>
+                <th>Dimensions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for carton in order.cartons %}
+                <tr>
+                    <td>
+                        <dl class="dl-horizontal">
+                            <dt>Tracking Number</dt>
+                            <dd>{{ carton.trackingNumber }}</dd>
+                            <dt>Ucc</dt>
+                            <dd>{{ carton.ucc }}</dd>
+                            <dt>Freight Cost</dt>
+                            <dd>${{ carton.freightCost|number_format(2) }}</dd>
+                        </dl>
+                    </td>
+                    <td>
+                        <table class="table table-bordered table-condensed table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Item Number</th>
+                                    <th>Quantity Shipped</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in carton.items %}
+                                    <tr>
+                                        <td>{{ item.itemNumber }}</td>
+                                        <td>{{ item.quantity }}</td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </td>
+                    <td>
+                        <table class="table table-bordered table-condensed table-striped">
+                            <tbody>
+                                <tr>
+                                    <th>Height</th>
+                                    <td>{{ carton.packageHeight }} in</td>
+                                </tr>
+                                <tr>
+                                    <th>Length</th>
+                                    <td>{{ carton.packageLength }} in</td>
+                                </tr>
+                                <tr>
+                                    <th>Width</th>
+                                    <td>{{ carton.packageWidth }} in</td>
+                                </tr>
+                                <tr>
+                                    <th>Weight</th>
+                                    <td>{{ carton.shippingWeight }} lbs</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+{% endblock %}

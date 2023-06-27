@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("input[name='search']").focus();
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header">Sales List</h1>
+    </div>
+
+    <br>
+
+    <div class="row">
+        <div class="col-sm-6">
+
+            <form class="form-inline" id="inputForm" action="{{ path('sales_list_add') }}" method="post">
+                <div class="form-group">
+                    <input class="form-control" type="text" name="search" placeholder="Search Terms" required>
+                </div>
+                <button class="btn btn-default" type="submit">Submit</button>
+            </form>
+
+        </div>
+
+        <div class="col-sm-6">
+
+            <form class="form-inline" id="inputForm" action="{{ path('sales_list_import') }}" method="post">
+                <div class="form-group">
+                    <textarea class="form-control" name="import" required></textarea>
+                </div>
+                <button class="btn btn-default" type="submit">Import</button>
+            </form>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Item Number</th>
+                <th>Name</th>
+                <th>Type</th>
+                <th>Vendor</th>
+                <th>Price</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.itemNumber }}</td>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.productType.code }}</td>
+                    <td>{{ product.manufacturer.code }}</td>
+                    <td>${{ product.wholesalePrice }}</td>
+                    <td><a href="{{ path('sales_list_remove', {itemNumber: product.itemNumber}) }}">Remove</a></td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p><a href="{{ path('sales_list_export') }}" class="btn btn-lg btn-primary">Download List</a></p>
+
+{% endblock %}

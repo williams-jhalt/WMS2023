@@ -1,0 +1,22 @@
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Order Number</th>
+            <th>Pages</th>
+            <th>Lines</th>
+            <th>User</th>
+            <th>Date</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for scan in scans %}
+            <tr>
+                <td>{{ scan.orderNumber }}</td>
+                <td>{{ scan.pageCount }}</td>
+                <td>{{ scan.lineCount }}</td>
+                <td>{{ scan.user }}</td>
+                <td>{{ scan.timestamp|date('D, d M Y h:i:s a') }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("input[name='manifestId']").focus();
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <h1 class="page-header">Dim Watcher</h1>
+    </div>
+
+    <br>
+
+    <form class="form-inline" id="inputForm" action="{{ path('dimwatcher_list') }}" method="post">
+        <div class="form-group">
+            <input class="form-control" type="text" name="manifestId" placeholder="Manifest ID" required>
+        </div>
+        <button class="btn btn-default" type="submit">Submit</button>
+    </form>
+
+    <br>
+
+{% endblock %}

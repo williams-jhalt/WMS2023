@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $('#newMuffsOrderTable').DataTable();
+            $('#newWilliamsOrderTable').DataTable();
+        });
+    </script>
+{% endblock %}
+
+{% block body %}
+
+    <h1>Muffs Orders</h1>
+
+    <table id="newMuffsOrderTable" class="table display">
+        <thead>
+            <tr>
+                <th>Web Order Number</th>
+                <th>Customer</th>
+                <th>Order Date</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Web Order Number</th>
+                <th>Customer</th>
+                <th>Order Date</th>
+            </tr>
+        </tfoot>
+        <tbody>
+            {% for order in muffs_orders %}
+                <tr>
+                    <td>{{ order.orderNumber }}</td>
+                    <td>{{ order.customerNumber }}</td>
+                    <td>{{ order.orderDate|date('c') }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+        </tbody>
+    </table>
+
+    <h1>Williams Orders</h1>
+
+    <table id="newWilliamsOrderTable" class="table display">
+        <thead>
+            <tr>
+                <th>Web Order Number</th>
+                <th>Customer</th>
+                <th>Order Date</th>
+            </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th>Web Order Number</th>
+                <th>Customer</th>
+                <th>Order Date</th>
+            </tr>
+        </tfoot>
+        <tbody>
+            {% for order in muffs_orders %}
+                <tr>
+                    <td>{{ order.orderNumber }}</td>
+                    <td>{{ order.customerNumber }}</td>
+                    <td>{{ order.orderDate|date('c') }}</td>
+                </tr>
+            {% endfor %}
+            <tr>
+        </tbody>
+    </table>
+
+{% endblock %}
