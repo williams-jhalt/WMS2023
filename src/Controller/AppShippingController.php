@@ -21,4 +21,16 @@ class AppShippingController extends AbstractController
             'selectedPrinter' => $selectedPrinter
         ]);
     }
+
+    #[Route('/shipping/review', name: 'shipping_review')]
+    public function reviewAction(Request $request): Response
+    {
+
+        // TODO
+        $shipment = "";
+
+        return $this->render('shipping/review.html.twig', [
+            'shipment' => $shipment
+        ]);
+    }
 }
