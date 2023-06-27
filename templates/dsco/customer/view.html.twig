@@ -1,0 +1,29 @@
+{% extends '@Dsco/layout.html.twig' %}
+
+{% block williams_dsco_content %}
+
+    <div class="col-sm-12">
+
+        <table class="table table-condensed">
+            <tbody>
+                <tr>
+                    <th>Sender Company Id</th>
+                    <td>{{ item.senderCompanyId }}</td>
+                </tr>
+                <tr>
+                    <th>Customer Number</th>
+                    <td>{{ item.customerNumber }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <p>
+            <a class="btn btn-primary" href="{{ path('dsco_customer_edit', {id: item.id}) }}">Edit</a>
+            <a class="btn btn-danger" href="{{ path('dsco_customer_delete', {id: item.id}) }}">Delete</a>
+        </p>
+
+        <p><a class="btn btn-default" href="{{ path('dsco_customer_list') }}">Back</a></p>
+
+    </div>
+
+{% endblock %}

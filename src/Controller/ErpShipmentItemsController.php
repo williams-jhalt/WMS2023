@@ -2,17 +2,36 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\View\View;
+use ErpBundle\Model\ShipmentItemCollection;
+use ErpBundle\Service\ErpService;
 
-class ErpShipmentItemsController extends AbstractController
-{
-    #[Route('/erp/shipment/items', name: 'app_erp_shipment_items')]
-    public function index(): Response
-    {
-        return $this->render('erp_shipment_items/index.html.twig', [
-            'controller_name' => 'ErpShipmentItemsController',
-        ]);
+class ErpShipmentItemsController extends AbstractFOSRestController {
+    
+    /**
+     * 
+     * @return ErpService
+     */
+    private function getErpService() {        
+        return $this->get('williams_erp.service');
     }
+    
+    /**
+     * @param int $orderNumber
+     * @param int $recordSequence
+     * @return View
+     */
+    public function getItemsAction($orderNumber, $recordSequence) {
+        
+        $repo = $this->getErpService()->getShipmentRepository();
+        
+        $items = $repo->getItems((int)$orderNumber, (int)$recordSequence);
+        
+        $view = $this->view($items, 200);
+        
+        return $this->handleView($view);
+        
+    }
+    
 }

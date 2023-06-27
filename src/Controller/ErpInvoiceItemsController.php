@@ -2,17 +2,36 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use FOS\RestBundle\Controller\AbstractFOSRestController;
+use FOS\RestBundle\View\View;
+use ErpBundle\Model\InvoiceItemCollection;
+use ErpBundle\Service\ErpService;
 
-class ErpInvoiceItemsController extends AbstractController
-{
-    #[Route('/erp/invoice/items', name: 'app_erp_invoice_items')]
-    public function index(): Response
-    {
-        return $this->render('erp_invoice_items/index.html.twig', [
-            'controller_name' => 'ErpInvoiceItemsController',
-        ]);
+class ErpInvoiceItemsController extends AbstractFOSRestController {
+    
+    /**
+     * 
+     * @return ErpService
+     */
+    private function getErpService() {        
+        return $this->get('williams_erp.service');
     }
+    
+    /**
+     * @param int $orderNumber
+     * @param int $recordSequence
+     * @return View
+     */
+    public function getItemsAction($orderNumber, $recordSequence) {
+                        
+        $repo = $this->getErpService()->getInvoiceRepository();
+        
+        $items = $repo->getItems((int)$orderNumber, (int)$recordSequence);
+        
+        $view = $this->view($items, 200);
+        
+        return $this->handleView($view);
+        
+    }
+    
 }

@@ -1,0 +1,53 @@
+{% extends '@LogicBroker/layout.html.twig' %}
+
+{% block williams_logicbroker_content %}
+
+    <div class="row">
+        <div class="col-sm-12">
+            <nav class="navbar navbar-default">
+                <ul class="nav navbar-nav">
+                    <li {% if app.request.get('status') == 150 %}class="active"{% endif %}><a href="{{ path('logicbroker_orderstatus_list', {status: 150}) }}">New</a></li>
+                    <li {% if app.request.get('status') == 500 %}class="active"{% endif %}><a href="{{ path('logicbroker_orderstatus_list', {status: 500}) }}">Received</a></li>
+                    <li {% if app.request.get('status') == 600 %}class="active"{% endif %}><a href="{{ path('logicbroker_orderstatus_list', {status: 600}) }}">Shipped</a></li>
+                    <li {% if app.request.get('status') == 1000 %}class="active"{% endif %}><a href="{{ path('logicbroker_orderstatus_list', {status: 1000}) }}">Complete</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    Total Orders: {{ items|length }}<br>
+
+    <div class="col-sm-12">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>LogicBroker Key</th>
+                    <th>Sender Company Id</th>
+                    <th>Document Date</th>
+                    <th>Partner PO</th>
+                    <th>Order Number</th>
+                    <th>Weborder Number</th>
+                    <th>Customer Number</th>
+                    <th>Status Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td><a href="{{ path('logicbroker_orderstatus_view', {id: item.id}) }}">{{ item.logicBrokerKey }}</a></td>
+                        <td>{{ item.senderCompanyId }}</td>
+                        <td>{{ item.documentDate|date('Y-m-d') }}</td>
+                        <td>{{ item.partnerPO }}</td>
+                        <td>{{ item.orderNumber }}</td>
+                        <td>{{ item.weborderNumber }}</td>
+                        <td>{{ item.customerNumber }}</td>
+                        <td>{{ item.statusCode }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+{% endblock %}

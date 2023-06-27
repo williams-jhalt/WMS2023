@@ -45,7 +45,7 @@ class DscoCustomerController extends AbstractController
         // TODO
         $customer = "";
 
-        return $this->render('disco/customer/view/html.twig', [
+        return $this->render('dsco/customer/view/html.twig', [
             'item' => $customer
         ]);
     }
@@ -58,7 +58,7 @@ class DscoCustomerController extends AbstractController
         $customer = "";
         $formView = "";
 
-        return $this->render('disco/customer/edit.html.twig', [
+        return $this->render('dsco/customer/edit.html.twig', [
             'form' => $formView,
             'item' => $customer
         ]);

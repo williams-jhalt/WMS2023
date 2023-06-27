@@ -1,0 +1,13 @@
+{% extends '@LogicBroker/layout.html.twig' %}
+
+{% block williams_logicbroker_content %}
+
+    <div class="col-sm-12">
+
+        {{ form(form) }}
+
+        <p><a class="btn btn-default" href="{{ path('logicbroker_customer_list') }}">Cancel</a></p>
+
+    </div>
+
+{% endblock %}

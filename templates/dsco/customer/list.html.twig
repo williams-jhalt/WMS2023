@@ -1,0 +1,28 @@
+{% extends '@Dsco/layout.html.twig' %}
+
+{% block williams_dsco_content %}
+
+    <div class="col-sm-12">
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sender Company Id</th>
+                    <th>Customer Number</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr>
+                        <td><a href="{{ path('dsco_customer_view', {id: item.id}) }}">{{ item.senderCompanyId }}</a></td>
+                        <td>{{ item.customerNumber }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <p><a class="btn btn-primary" href="{{ path('dsco_customer_new') }}">Add Customer</a></p>            
+
+    </div>
+
+{% endblock %}
