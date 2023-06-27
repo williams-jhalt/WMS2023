@@ -7,7 +7,7 @@ use FOS\RestBundle\View\View;
 use ErpBundle\Model\SalesOrderItemCollection;
 use ErpBundle\Service\ErpService;
 
-class SalesOrderItemsController extends AbstractFOSRestController {
+class ErpSalesOrderItemsController extends AbstractFOSRestController {
 
     /**
      * 

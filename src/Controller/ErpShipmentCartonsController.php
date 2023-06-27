@@ -7,7 +7,7 @@ use FOS\RestBundle\View\View;
 use ErpBundle\Model\ShipmentPackageCollection;
 use ErpBundle\Service\ErpService;
 
-class AbstractShipmentCartonsController extends AbstractFOSRestController {
+class ErpShipmentCartonsController extends AbstractFOSRestController {
     
     /**
      * 

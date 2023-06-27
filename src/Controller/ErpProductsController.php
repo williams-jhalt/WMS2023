@@ -9,7 +9,7 @@ use FOS\RestBundle\View\View;
 use ErpBundle\Model\ProductCollection;
 use ErpBundle\Service\ErpService;
 
-class ProductsController extends AbstractFOSRestController {
+class ErpProductsController extends AbstractFOSRestController {
     
     /**
      * @return ErpService

@@ -7,7 +7,7 @@ use FOS\RestBundle\View\View;
 use ErpBundle\Model\InvoiceCollection;
 use ErpBundle\Service\ErpService;
 
-class InvoicesController extends AbstractFOSRestController {
+class ErpInvoicesController extends AbstractFOSRestController {
     
     /**
      * 
