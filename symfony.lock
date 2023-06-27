@@ -38,6 +38,18 @@
             "./config/routes/fos_js_routing.yaml"
         ]
     },
+    "friendsofsymfony/rest-bundle": {
+        "version": "3.5",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "main",
+            "version": "3.0",
+            "ref": "3762cc4e4f2d6faabeca5a151b41c8c791bd96e5"
+        },
+        "files": [
+            "./config/packages/fos_rest.yaml"
+        ]
+    },
     "knplabs/knp-menu-bundle": {
         "version": "v3.2.0"
     },
