@@ -24,7 +24,7 @@ class AppExportInvoicesCommand extends Command
         parent::__construct();
     }
 
-    protected function configure() {
+    protected function configure(): void {
         $this->addArgument('customerNumber', InputArgument::REQUIRED, "Customer Number")
                 ->addArgument('startDate', InputArgument::REQUIRED, "Start Date")
                 ->addArgument('endDate', InputArgument::REQUIRED, "End Date")

@@ -32,7 +32,7 @@ class AppSyncWholesaleCommand extends Command
         parent::__construct();
     }
 
-    protected function configure() {
+    protected function configure(): void {
         $this->setHelp('This command loads product data from Wholesale site if it does not exist in the current database.');
     }
 

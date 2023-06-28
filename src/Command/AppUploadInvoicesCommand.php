@@ -22,7 +22,7 @@ class AppUploadInvoicesCommand extends Command
         parent::__construct();
     }
 
-    protected function configure() {
+    protected function configure(): void {
         $this->addArgument('customerNumber', InputArgument::REQUIRED, "Customer Number")
                 ->addArgument('hostname', InputArgument::REQUIRED, "FTP Hostname")
                 ->addArgument('username', InputArgument::REQUIRED, "FTP Username")

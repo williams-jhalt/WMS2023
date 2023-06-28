@@ -22,7 +22,7 @@ class AppExportShippingInfoCommand extends Command
         parent::__construct();
     }
 
-    protected function configure() {
+    protected function configure(): void {
         $this->addArgument('startDate', InputArgument::REQUIRED, "Start Date")
                 ->addArgument('endDate', InputArgument::REQUIRED, "End Date")
                 ->addArgument('output', InputArgument::REQUIRED, "Output File");

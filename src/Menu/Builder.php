@@ -1,6 +1,6 @@
 <?php 
 
-namespace AppBundle\Menu;
+namespace App\Menu;
 
 use Knp\Menu\FactoryInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -10,9 +10,16 @@ class Builder implements ContainerAwareInterface
 {
     use ContainerAwareTrait;
 
-    public function mainMenu(FactoryInterface $factory, array $options)
+    private $factory;
+
+    public function __construct(FactoryInterface $factory)
     {
-        $menu = $factory->createItem('root');
+        $this->factory = $factory;
+    }
+
+    public function mainMenu(array $options)
+    {
+        $menu = $this->factory->createItem('root');
     	$menu->setChildrenAttribute('class', 'nav navbar-nav');
 
         $menu->addChild('Home', array('route' => 'homepage'));
@@ -20,9 +27,9 @@ class Builder implements ContainerAwareInterface
         return $menu;
     }
     
-    public function sidebarMenu(FactoryInterface $factory, array $options)
+    public function sidebarMenu(array $options)
     {
-        $menu = $factory->createItem('root');
+        $menu = $this->factory->createItem('root');
     	$menu->setChildrenAttribute('class', 'nav nav-pills nav-stacked');
         
         $menu->addChild('Document Tracker', array('route' => 'document_tracker_index'));
@@ -35,9 +42,9 @@ class Builder implements ContainerAwareInterface
         return $menu;
     }
 
-    public function documentLogMenu(FactoryInterface $factory, array $options)
+    public function documentLogMenu(array $options)
     {
-        $menu = $factory->createItem('root');
+        $menu = $this->factory->createItem('root');
     	$menu->setChildrenAttribute('class', 'nav nav-tabs');
 
         $menu->addChild('Scan', array('route' => 'document_tracker_index'));
@@ -46,9 +53,9 @@ class Builder implements ContainerAwareInterface
         return $menu;
     }
 
-    public function pickerLogMenu(FactoryInterface $factory, array $options)
+    public function pickerLogMenu(array $options)
     {
-        $menu = $factory->createItem('root');
+        $menu = $this->factory->createItem('root');
     	$menu->setChildrenAttribute('class', 'nav nav-tabs');
 
         $menu->addChild('Scan', array('route' => 'picker_log_index'));
@@ -57,9 +64,9 @@ class Builder implements ContainerAwareInterface
         return $menu;
     }
 
-    public function productMenu(FactoryInterface $factory, array $options)
+    public function productMenu(array $options)
     {
-        $menu = $factory->createItem('root');
+        $menu = $this->factory->createItem('root');
     	$menu->setChildrenAttribute('class', 'nav nav-tabs');
 
         $menu->addChild('Lookup', array('route' => 'product_lookup_index'));

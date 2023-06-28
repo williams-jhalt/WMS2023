@@ -1,6 +1,6 @@
 <?php
 
-namespace AppBundle\Form;
+namespace App\Form;
 
 use App\Entity\ProductAttribute;
 use Symfony\Component\Form\AbstractType;
@@ -11,14 +11,14 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ProductAttributeType extends AbstractType {
     
-    public function buildForm(FormBuilderInterface $builder, array $options) {
+    public function buildForm(FormBuilderInterface $builder, array $options): void {
         
         $builder->add('name', TextType::class)
                 ->add('value', TextType::class);
         
     }
     
-    public function configureOptions(OptionsResolver $resolver) {
+    public function configureOptions(OptionsResolver $resolver): void {
         $resolver->setDefaults([
             'data_class' => ProductAttribute::class
         ]);

@@ -22,7 +22,7 @@ class AppGenerateReportsCommand extends Command
         parent::__construct();
     }
 
-    protected function configure() {}
+    protected function configure(): void {}
 
     protected function execute(InputInterface $input, OutputInterface $output): int {
                 

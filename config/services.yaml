@@ -17,6 +17,7 @@ services:
         resource: '../src/'
         exclude:
             - '../src/Model/'
+            - '../src/Service/ConnectShip/'
             - '../src/DependencyInjection/'
             - '../src/Entity/'
             - '../src/Kernel.php'
@@ -58,3 +59,14 @@ services:
             $wsdl: ""
             $username: ""
             $password: ""
+
+    app.menu_builder:
+        class: App\Menu\Builder
+        arguments: ["@knp_menu.factory"]
+        tags:
+            - { name: knp_menu.menu_builder, method: mainMenu, alias: mainMenu }
+            - { name: knp_menu.menu_builder, method: sidebarMenu, alias: sidebarMenu }
+            - { name: knp_menu.menu_builder, method: documentLogMenu, alias: documentLogMenu }
+            - { name: knp_menu.menu_builder, method: pickerLogMenu, alias: pickerLogMenu }
+            - { name: knp_menu.menu_builder, method: productMenu, alias: productMenu }
+

@@ -55,10 +55,11 @@ class ExportService {
      * @param string $customerNumber
      * @param DateTime $startDate
      * @param DateTime $endDate
+     * @param bool $consolidated
      * @param SplFileInfo $headerFile
      * @param SplFileInfo $detailFile
      */
-    public function exportInvoiceData($customerNumber, DateTime $startDate, DateTime $endDate, $consolidated = false, SplFileInfo $headerFile, SplFileInfo $detailFile) {
+    public function exportInvoiceData(string $customerNumber, DateTime $startDate, DateTime $endDate, bool $consolidated, SplFileInfo $headerFile, SplFileInfo $detailFile) {
 
         $repo = $this->erp->getInvoiceRepository();
         $shipmentRepo = $this->erp->getShipmentRepository();

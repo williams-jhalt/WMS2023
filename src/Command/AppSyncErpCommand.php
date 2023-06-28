@@ -30,7 +30,7 @@ class AppSyncErpCommand extends Command
         parent::__construct();
     }
     
-    protected function configure() {
+    protected function configure(): void {
         $this->setHelp('This command loads all products from ERP into the catalog, new products will be created.');
     }
 
