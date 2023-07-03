@@ -2,17 +2,17 @@
 
 namespace App\Command;
 
-use App\Service\ErpServerService;
+use App\Service\ErpService;
 use App\Repository\ProductRepository;
 use App\Repository\ProductTypeRepository;
 use App\Repository\ManufacturerRepository;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use App\Entity\Product;
+use App\Entity\ProductType;
+use App\Entity\Manufacturer;
 
 #[AsCommand(
     name: 'app:sync:erp',
@@ -22,7 +22,7 @@ class AppSyncErpCommand extends Command
 {    
     
     public function __construct(
-        private ErpServerService $erp,
+        private ErpService $erp,
         private ProductRepository $repo,
         private ProductTypeRepository $typeRepo,
         private ManufacturerRepository $mfgrRepo

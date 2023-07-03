@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Model\ProductImage;
 use Doctrine\ORM\EntityManagerInterface;
-use App\Service\ErpServerService as ErpService;
+use App\Service\ErpService as ErpService;
 use App\Service\WholesaleService;
 
 class ProductService {

@@ -3,11 +3,11 @@
 namespace App\Service;
 
 use GuzzleHttp\Client;
-use WholesaleBundle\Repository\CategoryRepository;
-use WholesaleBundle\Repository\ManufacturerRepository;
-use WholesaleBundle\Repository\ProductImageRepository;
-use WholesaleBundle\Repository\ProductRepository;
-use WholesaleBundle\Repository\ProductTypeRepository;
+use App\Repository\Wholesale\CategoryRepository;
+use App\Repository\Wholesale\ManufacturerRepository;
+use App\Repository\Wholesale\ProductImageRepository;
+use App\Repository\Wholesale\ProductRepository;
+use App\Repository\Wholesale\ProductTypeRepository;
 
 class WholesaleService {
     
@@ -17,23 +17,23 @@ class WholesaleService {
         $this->wholesaleUrl = $wholesaleUrl;
     }
     
-    public function getCategoryRepository() {
+    public function getCategoryRepository(): CategoryRepository {
         return new CategoryRepository(new Client(['base_uri' => $this->wholesaleUrl]));
     }
     
-    public function getManufacturerRepository() {
+    public function getManufacturerRepository(): ManufacturerRepository {
         return new ManufacturerRepository(new Client(['base_uri' => $this->wholesaleUrl]));
     }
     
-    public function getProductImageRepository() {
+    public function getProductImageRepository(): ProductImageRepository {
         return new ProductImageRepository(new Client(['base_uri' => $this->wholesaleUrl]));
     }
     
-    public function getProductRepository() {
+    public function getProductRepository(): ProductRepository {
         return new ProductRepository(new Client(['base_uri' => $this->wholesaleUrl]));
     }
     
-    public function getProductTypeRepository() {
+    public function getProductTypeRepository(): ProductTypeRepository {
         return new ProductTypeRepository(new Client(['base_uri' => $this->wholesaleUrl]));
     }
     

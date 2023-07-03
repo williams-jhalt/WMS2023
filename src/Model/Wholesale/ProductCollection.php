@@ -2,12 +2,38 @@
 
 namespace App\Model\Wholesale;
 
-class ProductCollection {
+class ProductCollection implements \Iterator {
 
     private $offset;
     private $limit;
     private $total;
     private $items;
+
+    private $position = 0;
+
+    public function __construct() {
+        $this->position = 0;
+    }
+
+    public function rewind(): void {
+        $this->position = 0;
+    }
+
+    public function current(): Product {
+        return $this->items[$this->position];
+    }
+
+    public function key(): int {
+        return $this->position;
+    }
+
+    public function next(): void {
+        ++$this->position;
+    }
+
+    public function valid(): bool {
+        return isset($this->items[$this->position]);
+    }
 
     public function getOffset() {
         return $this->offset;

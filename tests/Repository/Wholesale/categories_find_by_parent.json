@@ -1,0 +1,70 @@
+{
+    "categories": [
+        {
+            "id": "819",
+            "code": "477",
+            "name": "Adult Candy and Erotic Foods",
+            "description": null,
+            "active": "1",
+            "parent_id": "818",
+            "video": "0",
+            "lft": "2",
+            "rgt": "7"
+        },
+        {
+            "id": "820",
+            "code": "164",
+            "name": "Adult Party Supplies",
+            "description": null,
+            "active": "1",
+            "parent_id": "818",
+            "video": "0",
+            "lft": "8",
+            "rgt": "21"
+        },
+        {
+            "id": "821",
+            "code": "554",
+            "name": "For the Bachelor Party",
+            "description": null,
+            "active": "1",
+            "parent_id": "818",
+            "video": "0",
+            "lft": "22",
+            "rgt": "23"
+        },
+        {
+            "id": "941",
+            "code": "623",
+            "name": "Adult Gags, Gifts and Novelties",
+            "description": null,
+            "active": "1",
+            "parent_id": "818",
+            "video": "0",
+            "lft": "24",
+            "rgt": "41"
+        },
+        {
+            "id": "962",
+            "code": "674",
+            "name": "For the Bachelorette Party",
+            "description": null,
+            "active": "1",
+            "parent_id": "818",
+            "video": "0",
+            "lft": "42",
+            "rgt": "43"
+        },
+        {
+            "id": "978",
+            "code": "493",
+            "name": "Adult Party Games",
+            "description": null,
+            "active": "1",
+            "parent_id": "818",
+            "video": "0",
+            "lft": "44",
+            "rgt": "45"
+        }
+    ]
+}

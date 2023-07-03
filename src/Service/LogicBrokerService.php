@@ -9,7 +9,7 @@ use App\Adapter\LogicBroker\CsvInvoiceAdapter;
 use App\Adapter\LogicBroker\CsvOrderAdapter;
 use App\Adapter\LogicBroker\CsvShipmentAdapter;
 use App\Entity\LogicBrokerOrderStatus;
-use App\LogicBrokerHandlerInterface;
+use App\Service\LogicBrokerHandlerInterface;
 use SplFileObject;
 
 class LogicBrokerService {

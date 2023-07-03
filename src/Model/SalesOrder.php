@@ -148,7 +148,7 @@ class SalesOrder extends \App\Model\Erp\SalesOrder {
 
     /**
      * 
-     * @param String $source
+     * @param string $source
      * @return SalesOrder
      */
     public function setSource($source) {

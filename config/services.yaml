@@ -41,7 +41,7 @@ services:
         arguments:
             $wsdl_url: ""
 
-    App\Service\ErpServerService:
+    App\Service\ErpService:
         arguments:
             $server: ""
             $username: ""
@@ -52,13 +52,19 @@ services:
 
     App\Service\WholesaleService:
         arguments:
-            $wholesaleUrl: ""
+            $wholesaleUrl: "%env(WHOLESALE_REST_BASE_URL)%"
 
-    App\Service\WmsService:
+    App\Service\WilliamsWmsService:
         arguments:
-            $wsdl: ""
-            $username: ""
-            $password: ""
+            $wsdl: "%env(WILLIAMS_WMS_WSDL_URL)%"
+            $username: "%env(WILLIAMS_WMS_USERNAME)%"
+            $password: "%env(WILLIAMS_WMS_PASSWORD)%"
+
+    App\Service\MuffsWmsService:
+        arguments:
+            $wsdl: "%env(MUFFS_WMS_WSDL_URL)%"
+            $username: "%env(MUFFS_WMS_USERNAME)%"
+            $password: "%env(MUFFS_WMS_PASSWORD)%"
 
     app.menu_builder:
         class: App\Menu\Builder

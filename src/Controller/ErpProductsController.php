@@ -6,8 +6,8 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 use FOS\RestBundle\View\View;
-use ErpBundle\Model\ProductCollection;
-use ErpBundle\Service\ErpService;
+use App\Model\Erp\ProductCollection;
+use App\Service\ErpService;
 
 class ErpProductsController extends AbstractFOSRestController {
     

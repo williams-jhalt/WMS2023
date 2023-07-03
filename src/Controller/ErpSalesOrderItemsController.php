@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
-use ErpBundle\Model\SalesOrderItemCollection;
-use ErpBundle\Service\ErpService;
+use App\Model\Erp\SalesOrderItemCollection;
+use App\Service\ErpService;
 
 class ErpSalesOrderItemsController extends AbstractFOSRestController {
 

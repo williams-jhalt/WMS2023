@@ -7,10 +7,11 @@ use DateTime;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\ConnectshipService;
 use App\Model\Erp\SalesOrder as SalesOrder2;
+use App\Model\Erp\SalesOrderItem as SalesOrderItem;
 use App\Model\Erp\Shipment;
 use App\Model\Erp\ShipmentItem;
 use App\Model\Erp\ShipmentPackage;
-use App\Service\ErpServerService as ErpService;
+use App\Service\ErpService as ErpService;
 use App\Model\Wms\Weborder;
 use App\Service\WmsService;
 
@@ -40,7 +41,7 @@ class OrderService {
     private $williamsWms;
 
     /**
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $em;
 

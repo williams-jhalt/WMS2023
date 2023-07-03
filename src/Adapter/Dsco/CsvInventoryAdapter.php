@@ -30,7 +30,7 @@ class CsvInventoryAdapter extends AbstractInventoryAdapter {
 
     /**
      * 
-     * @param Inbventory $inventory
+     * @param Inventory $inventory
      */
     public function writeLine(Inventory $inventory) {
 

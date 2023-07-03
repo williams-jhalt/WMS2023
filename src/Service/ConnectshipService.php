@@ -2,90 +2,139 @@
 
 namespace App\Service;
 
-use App\Service\ConnectShip\AMP\AMPServices;
-use App\Service\ConnectShip\AMP\DataDictionary;
-use App\Service\ConnectShip\AMP\ListCarriersRequest;
-use App\Service\ConnectShip\AMP\ListPrinterDevicesRequest;
-use App\Service\ConnectShip\AMP\ListServicesRequest;
 use App\Service\ConnectShip\AMP\ListWindowsPrintersRequest;
-use App\Service\ConnectShip\AMP\SearchRequest;
 use App\Model\ConnectShip\Package;
+use App\Model\ConnectShip\Shipment;
 use DateInterval;
 use DatePeriod;
 use DateTime;
+use SoapClient;
 
 class ConnectshipService {
 
-    private $client;
+    protected $client;
 
     public function __construct(string $wsdl_url) {
-        $this->client = new AMPServices(array('soap_version' => SOAP_1_2), $wsdl_url);
+        $this->client = new SoapClient($wsdl_url, array('soap_version' => SOAP_1_2));
     }
 
     /**
      * 
      * @param string $ucc
-     * @return string
+     * @return string|null
      */
     public function getTrackingNumberByUcc($ucc) {
 
-        $service = $this->client;
+        $resp = $this->client->ListCarriers([]);
 
-        $carriersResponse = $service->ListCarriers(new ListCarriersRequest(null, null, null, null));
+        $result = $resp->result;
 
-        foreach ($carriersResponse->getResult()->getResultData()->getItem() as $carrier) {
-            $searchRequest = new SearchRequest($carrier->getSymbol(), null, null, null, null, null, null);
-            $searchRequest->setFilters(array('consigneeReference' => $ucc));
-            $searchResponse = $service->Search($searchRequest);
-            $item = $searchResponse->getResult()->getResultData()->getItem();
-            if ($item !== null && $item[0]->getResultData()->getTrackingNumber() != null) {
-                return $item[0]->getResultData()->getTrackingNumber();
+        foreach ($result->resultData->item as $carrier) {
+            $searchRequest = [
+                'carrier' => $carrier->symbol,
+                'filters' => [
+                    'consigneeReference' => $ucc
+                ]
+            ];
+
+            $searchResp = $this->client->Search($searchRequest);
+
+            $searchResult = $searchResp->result;
+            $item = $searchResult->resultData->item;
+
+            if ($item !== null) {
+                return $item[0]->resultData->trackingNumber;
             }
         }
+
+        return null;
+        
     }
 
     /**
      * 
      * @param string $ucc
-     * @return DataDictionary[]
+     * @return Shipment[]
      */
     public function getShippingDataByUcc($ucc) {
 
-        $service = $this->client;
+        $resp = $this->client->ListCarriers([]);
 
-        $carriersResponse = $service->ListCarriers(new ListCarriersRequest(null, null, null, null));
+        $result = $resp->result;
 
-        foreach ($carriersResponse->getResult()->getResultData()->getItem() as $carrier) {
-            $searchRequest = new SearchRequest($carrier->getSymbol(), null, null, null, null, null, null);
-            $searchRequest->setFilters(array('consigneeReference' => $ucc));
-            $searchResponse = $service->Search($searchRequest);
-            $item = $searchResponse->getResult()->getResultData()->getItem();
+        $shipments = [];
+
+        foreach ($result->resultData->item as $carrier) {
+            $searchRequest = [
+                'carrier' => $carrier->symbol,
+                'filters' => [
+                    'consigneeReference' => $ucc
+                ]
+            ];
+
+            $searchResp = $this->client->Search($searchRequest);
+
+            $searchResult = $searchResp->result;
+            $item = $searchResult->resultData->item;
+
             if ($item !== null) {
-                return $item;
+
+                foreach ($item as $shippingData) {
+
+                    $shipment = new Shipment();
+                    $shipment->setTrackingNumber($shippingData->resultData->trackingNumber);
+                    $shipments[] = $shipment;
+
+                }
             }
         }
+
+        return $shipments;
     }
 
     /**
      * 
      * @param string $trackingNumber
-     * @return DataDictionary[]
+     * @return Shipment[]
      */
     public function getShippingDataByTrackingNumber($trackingNumber) {
+        
 
-        $service = $this->client;
+        $resp = $this->client->ListCarriers([]);
 
-        $carriersResponse = $service->ListCarriers(new ListCarriersRequest(null, null, null, null));
 
-        foreach ($carriersResponse->getResult()->getResultData()->getItem() as $carrier) {
-            $searchRequest = new SearchRequest($carrier->getSymbol(), null, null, null, null, null, null);
-            $searchRequest->setFilters(array('trackingNumber' => $trackingNumber));
-            $searchResponse = $service->Search($searchRequest);
-            $item = $searchResponse->getResult()->getResultData()->getItem();
+        $result = $resp->result;
+
+        $shipments = [];
+
+        foreach ($result->resultData->item as $carrier) {
+
+            $searchRequest = [
+                'carrier' => $carrier->symbol,
+                'filters' => [
+                    'trackingNumber' => $trackingNumber
+                ]
+            ];
+
+            $searchResp = $this->client->Search($searchRequest);
+
+            $searchResult = $searchResp->result;
+            $item = $searchResult->resultData->item;
+
             if ($item !== null) {
-                return $item;
+
+                foreach ($item as $shippingData) {
+
+                    $shipment = new Shipment();
+                    $shipment->setTrackingNumber($shippingData->resultData->trackingNumber);
+                    $shipments[] = $shipment;
+
+                }
             }
         }
+
+        return $shipments;
+
     }
 
     public function getPrinterNames() {
@@ -104,51 +153,54 @@ class ConnectshipService {
         $period = new DatePeriod($startDate, new DateInterval('P1D'), $endDate);
         
 
-        $services = $this->client->ListServices(new ListServicesRequest(null, null, null, null));
-        $carriers = $this->client->ListCarriers(new ListCarriersRequest(null, null, null, null));
+        $services = $this->client->ListServices([]);
+        $carriers = $this->client->ListCarriers([]);
         
         $svc = array();
         
-        foreach ($services->getResult()->getResultData()->getItem() as $service) {
-            $svc[$service->getSymbol()] = $service->getName();
+        foreach ($services->result->resultData->item as $service) {
+            $svc[$service->symbol] = $service->name;
         }
 
         $response = array();
 
-        foreach ($carriers->getResult()->getResultData()->getItem() as $carrier) {
+        foreach ($carriers->result->resultData->item as $carrier) {
 
             foreach ($period as $date) {
 
-                $filter = new DataDictionary(null);
-                $filter->setShipdate($date->format('Y-m-d'));
-                $search = new SearchRequest($carrier->getSymbol(), $filter, null, null, null, null, null);
-                $search->setGlobalSearch(true);
-                $result = $this->client->Search($search);
+                $searchRequest = [
+                    'carrier' => $carrier->symbol,
+                    'filters' => [
+                        'shipdate' => $date->format('Y-m-d')
+                    ]
+                ];
 
-                $packages = $result->getResult()->getResultData()->getItem();
+                $result = $this->client->Search($searchRequest);
+
+                $packages = $result->result->resultData->item;
 
                 if ($packages !== null) {
                     foreach ($packages as $package) {
-                        $resultData = $package->getResultData();
+                        $resultData = $package->resultData;
                         $pkg = new Package();
-                        if ($resultData->getDimension() !== null) {
-                            $pkg->setDimUnit($resultData->getDimension()->getUnit());
-                            $pkg->setHeight($resultData->getDimension()->getHeight());
-                            $pkg->setLength($resultData->getDimension()->getLength());
-                            $pkg->setWidth($resultData->getDimension()->getWidth());
+                        if ($resultData->dimension !== null) {
+                            $pkg->setDimUnit($resultData->dimension->unit);
+                            $pkg->setHeight($resultData->dimension->height);
+                            $pkg->setLength($resultData->dimension->length);
+                            $pkg->setWidth($resultData->dimension->width);
                         }
-                        $pkg->setWeight($resultData->getWeight()->getAmount());
-                        if ($resultData->getTotal() !== null) {
-                            $pkg->setFreightCharge($resultData->getTotal()->getAmount());
+                        $pkg->setWeight($resultData->weight->amount);
+                        if ($resultData->total !== null) {
+                            $pkg->setFreightCharge($resultData->total->amount);
                         }
-                        if ($resultData->getFuelSurcharge() !== null) {
-                            $pkg->setFuelSurcharge($resultData->getFuelSurcharge()->getAmount());
+                        if ($resultData->fuelSurcharge !== null) {
+                            $pkg->setFuelSurcharge($resultData->fuelSurcharge->amount);
                         }
-                        $pkg->setConsigneePostalCode($resultData->getConsignee()->getPostalCode());
-                        $pkg->setConsigneeCountry($resultData->getConsignee()->getCountryCode());
-                        $pkg->setConsigneeState($resultData->getConsignee()->getStateProvince());
-                        $pkg->setShippingMethod($svc[$resultData->getService()]);
-                        $pkg->setShipDate($resultData->getShipdate());
+                        $pkg->setConsigneePostalCode($resultData->consignee->postalCode);
+                        $pkg->setConsigneeCountry($resultData->consignee->countryCode);
+                        $pkg->setConsigneeState($resultData->consignee->stateProvince);
+                        $pkg->setShippingMethod($svc[$resultData->service]);
+                        $pkg->setShipDate($resultData->shipdate);
                         $response[] = $pkg;
                     }
                 }

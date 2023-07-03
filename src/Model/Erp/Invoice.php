@@ -63,7 +63,7 @@ class Invoice extends SalesOrder {
 
     /**
      * 
-     * @return integer
+     * @return DateTime
      */
     public function getInvoiceDate() {
         return $this->invoiceDate;

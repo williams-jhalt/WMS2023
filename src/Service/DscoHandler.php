@@ -5,10 +5,10 @@ namespace App\Service;
 use DateTime;
 use App\Model\Erp\Order as ErpOrder;
 use App\Model\Erp\OrderItem as ErpOrderItem;
-use App\Service\ErpServerService as ErpService;
+use App\Service\ErpService as ErpService;
 use App\Adapter\Dsco\AbstractInventoryAdapter;
 use App\Entity\DscoOrderStatus as OrderStatus;
-use App\DscoHandlerInterface;
+use App\Service\DscoHandlerInterface;
 use App\Model\Dsco\Inventory;
 use App\Model\Dsco\Invoice;
 use App\Model\Dsco\InvoiceLine;
@@ -28,7 +28,7 @@ class DscoHandler implements DscoHandlerInterface {
 
     /**
      *
-     * @var \ConnectshipBundle\Service\ConnectshipService
+     * @var ConnectshipService
      */
     private $cs;
 
@@ -84,7 +84,7 @@ class DscoHandler implements DscoHandlerInterface {
 
         $this->service->getSalesOrderRepository()->submitOrder($salesOrder);
 
-        return $order->getIdentifier()->getLogicBrokerKey();
+        return $order->getIdentifier()->getDscoKey();
     }
 
     public function retrieveOrderNumber(OrderStatus $orderStatus) {

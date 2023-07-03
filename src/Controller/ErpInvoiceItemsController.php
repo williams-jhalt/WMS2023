@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
-use ErpBundle\Model\InvoiceItemCollection;
-use ErpBundle\Service\ErpService;
+use App\Model\Erp\InvoiceItemCollection;
+use App\Service\ErpService;
 
 class ErpInvoiceItemsController extends AbstractFOSRestController {
     

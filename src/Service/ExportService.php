@@ -7,7 +7,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use SplFileInfo;
 use SplFileObject;
 use App\Service\ConnectshipService;
-use App\Service\ErpServerService as ErpService;
+use App\Service\ErpService as ErpService;
 use App\Service\WmsService;
 
 class ExportService {
@@ -38,7 +38,7 @@ class ExportService {
 
     /**
      *
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $em;
 

@@ -2,11 +2,11 @@
 
 namespace App\Service;
 
-use WmsBundle\Repository\WeborderRepository;
+use App\Repository\Wms\WeborderRepository;
 
 class WmsService {
     
-    private $client;
+    protected $client;
     
     public function __construct(string $wsdl, string $username, string $password) {
         $this->client = new \SoapClient($wsdl, [

@@ -1,18 +1,18 @@
 <?php
 
-namespace App;
+namespace App\Service;
 
-use App\Adapter\LogicBroker\AbstractInventoryAdapter;
-use App\Entity\LogicBrokerOrderStatus as OrderStatus;
-use App\Model\LogicBroker\Invoice;
-use App\Model\LogicBroker\Order;
-use App\Model\LogicBroker\Shipment;
+use App\Adapter\Dsco\AbstractInventoryAdapter;
+use App\Entity\DscoOrderStatus as OrderStatus;
+use App\Model\Dsco\Invoice;
+use App\Model\Dsco\Order;
+use App\Model\Dsco\Shipment;
 
 /**
  * Implement this class to create a handler for submitting and retrieving
  * order information
  */
-interface LogicBrokerHandlerInterface {
+interface DscoHandlerInterface {
 
     /**
      * Submit an order to the ordering system and return  

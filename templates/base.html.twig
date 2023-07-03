@@ -57,6 +57,7 @@
                     <div class="sidebar-nav navbar-collapse">
                         <ul class="nav" id="side-menu">
                             <li><a href="{{ path('reports_index') }}">Dashboard</a></li>
+                            <li><a href="{{ path('app_handheld') }}">Handheld</a></li>
                             <li><a href="{{ path('document_tracker_index') }}">Document Tracker</a></li>
                             <li><a href="{{ path('packer_log_index') }}">Packer Log</a></li>
                             <li><a href="{{ path('picker_log_index') }}">Picker Log</a></li>
@@ -66,11 +67,12 @@
                             <li><a href="{{ path('sales_orders_index_mfg') }}">Order Lookup (MFG)</a></li>
                             <li><a href="{{ path('product_lookup_committed') }}">Committed Products</a></li>
                             <li><a href="{{ path('shipments_index') }}">Open Shipment Report</a></li>
-                            <li><a href="{{ path('logicbroker_customer_index') }}">Logicbroker Customers</a></li>
-                            <li><a href="{{ path('logicbroker_orderstatus_index') }}">Logicbroker Orders</a></li>
+                            <li><a href="{{ path('order_watcher_index') }}">Order Watcher</a></li>
+                            {#<li><a href="{{ path('logicbroker_customer_index') }}">Logicbroker Customers</a></li>#}
+                            {#<li><a href="{{ path('logicbroker_orderstatus_index') }}">Logicbroker Orders</a></li>#}
                             <li><a href="{{ path('catalog_homepage') }}">Catalog</a></li>
                             <li><a href="{{ path('credits_index') }}">Credit Builder</a></li>
-                            <li><a href="{{ path('shipping_index') }}">Shipping</a></li>
+                            {#<li><a href="{{ path('shipping_index') }}">Shipping</a></li>#}
                             <li><a href="{{ path('dimwatcher_index') }}">Dim Watcher</a></li>
                             <li><a href="{{ path('sales_list_index') }}">Sales List</a></li>
                         </ul>

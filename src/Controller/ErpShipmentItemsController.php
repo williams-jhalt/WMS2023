@@ -4,8 +4,8 @@ namespace App\Controller;
 
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\View\View;
-use ErpBundle\Model\ShipmentItemCollection;
-use ErpBundle\Service\ErpService;
+use App\Model\Erp\ShipmentItemCollection;
+use App\Service\ErpService;
 
 class ErpShipmentItemsController extends AbstractFOSRestController {
     

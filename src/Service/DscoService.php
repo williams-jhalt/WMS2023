@@ -9,7 +9,7 @@ use App\Adapter\Dsco\CsvInvoiceAdapter;
 use App\Adapter\Dsco\CsvOrderAdapter;
 use App\Adapter\Dsco\CsvShipmentAdapter;
 use App\Entity\DscoOrderStatus;
-use App\DscoHandlerInterface;
+use App\Service\DscoHandlerInterface;
 use SplFileObject;
 
 class DscoService {

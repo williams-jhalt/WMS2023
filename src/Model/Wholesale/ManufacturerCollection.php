@@ -2,12 +2,37 @@
 
 namespace App\Model\Wholesale;
 
-class ManufacturerCollection {
+class ManufacturerCollection implements \Iterator {
 
     private $offset;
     private $limit;
     private $total;
     private $items;
+    private $position = 0;
+
+    public function __construct() {
+        $this->position = 0;
+    }
+
+    public function rewind(): void {
+        $this->position = 0;
+    }
+
+    public function current(): Manufacturer {
+        return $this->items[$this->position];
+    }
+
+    public function key(): int {
+        return $this->position;
+    }
+
+    public function next(): void {
+        ++$this->position;
+    }
+
+    public function valid(): bool {
+        return isset($this->items[$this->position]);
+    }
 
     public function getOffset() {
         return $this->offset;
@@ -23,7 +48,7 @@ class ManufacturerCollection {
 
     /**
      * 
-     * @return Manufacturers[]
+     * @return Manufacturer[]
      */
     public function getItems() {
         return $this->items;

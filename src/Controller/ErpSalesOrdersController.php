@@ -7,9 +7,9 @@ use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
 use FOS\RestBundle\Request\ParamFetcher;
 use Symfony\Component\HttpFoundation\Request;
-use ErpBundle\Model\Order;
-use ErpBundle\Model\SalesOrderCollection;
-use ErpBundle\Service\ErpService;
+use App\Model\Erp\Order;
+use App\Model\Erp\SalesOrderCollection;
+use App\Service\ErpService;
 
 class ErpSalesOrdersController extends AbstractFOSRestController {
 
