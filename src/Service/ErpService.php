@@ -58,7 +58,7 @@ class ErpService {
      */
     private function _getGrantToken($ch = null) {
 
-        return $this->_cache->get($this->_grantTokenId, function($ch): string {
+        return $this->_cache->get($this->_grantTokenId, function() use ($ch): string {
 
             $closeCurlWhenFinished = false;
 
@@ -106,7 +106,7 @@ class ErpService {
      */
     private function _getAccessToken($ch = null): string {
 
-        return $this->_cache->get($this->_accessTokenId, function($ch): string {
+        return $this->_cache->get($this->_accessTokenId, function() use ($ch): string {
 
             $closeCurlWhenFinished = false;
     

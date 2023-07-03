@@ -9,8 +9,8 @@ class ProductType {
     private $name;
     private $description;
     private $maxDiscountRate;
-    private $video;
-    private $active;
+    private $video = false;
+    private $active = false;
 
     public function getId() {
         return $this->id;

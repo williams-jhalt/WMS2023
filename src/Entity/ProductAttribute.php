@@ -50,4 +50,13 @@ class ProductAttribute
 
         return $this;
     }
+
+    public function getDetail() {
+        return $this->detail;
+    }
+
+    public function setDetail($detail) {
+        $this->detail = $detail;
+        return $this;
+    }
 }

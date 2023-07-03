@@ -76,7 +76,7 @@ class ProductTypeRepository {
 
         $data = json_decode($res->getBody());
         
-        if ($data->type == null) {
+        if ($data == null || $data->type == null) {
             return null;
         }
 

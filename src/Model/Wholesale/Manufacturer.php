@@ -7,8 +7,8 @@ class Manufacturer {
     private $id;
     private $code;
     private $name;
-    private $active;
-    private $video;
+    private $active = false;
+    private $video = false;
 
     public function getId() {
         return $this->id;

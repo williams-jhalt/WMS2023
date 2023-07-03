@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Service\ConnectShip\AMP\ListWindowsPrintersRequest;
 use App\Model\ConnectShip\Package;
 use App\Model\ConnectShip\Shipment;
 use DateInterval;
@@ -138,8 +137,8 @@ class ConnectshipService {
     }
 
     public function getPrinterNames() {
-        $response = $this->client->ListWindowsPrinters(new ListWindowsPrintersRequest(null, null, null, null));
-        return $response->getResult()->getResultData()->getItem();
+        $response = $this->client->ListWindowsPrinters([]);
+        return $response->result->resultData->item();
     }
 
     /**

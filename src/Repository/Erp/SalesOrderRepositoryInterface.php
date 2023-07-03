@@ -3,7 +3,6 @@
 namespace App\Repository\Erp;
 
 use DateTime;
-use App\Model\Erp\Order;
 use App\Model\Erp\SalesOrder;
 use App\Model\Erp\SalesOrderCollection;
 use App\Model\Erp\SalesOrderItemCollection;
@@ -63,11 +62,12 @@ interface SalesOrderRepositoryInterface {
     
     /**
      * 
-     * @param Order $order
+     * @param SalesOrder $order
+     * @param SalesOrderItemCollection $order
      * 
      * @return boolean 
      */
-    public function submitOrder(Order $order);
+    public function submitOrder(SalesOrder $order, SalesOrderItemCollection $items);
     
     /**
      * 

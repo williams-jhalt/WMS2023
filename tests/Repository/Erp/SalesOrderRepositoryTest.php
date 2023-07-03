@@ -2,8 +2,9 @@
 
 namespace App\Tests\Repository\Erp;
 
-use App\Model\Erp\Order;
-use App\Model\Erp\OrderItem;
+use App\Model\Erp\SalesOrder as Order;
+use App\Model\Erp\SalesOrderItem as OrderItem;
+use App\Model\Erp\SalesOrderItemCollection;
 use App\Model\Erp\Product;
 use App\Repository\Erp\ProductRepository;
 use PHPUnit\Framework\TestCase;
@@ -227,9 +228,15 @@ class SalesOrderRepositoryTest extends TestCase
 
         $testOrder = new Order();
         $testOrder->setCustomerNumber("TEST");
-        $testOrder->setItems([
+        $testOrder->setWebReferenceNumber("TEST");
+        
+        $testOrderItem = new OrderItem();
+        $testOrderItem->setItemNumber("TEST");
+
+        $testOrderItemCollection = new SalesOrderItemCollection([
             $testOrderItem
         ]);
+
 
         $mockErpService = $this->createMock(ErpService::class);
         $mockErpService->expects($this->any())
@@ -253,7 +260,7 @@ class SalesOrderRepositoryTest extends TestCase
             ->willReturn($mockProductRepository);
 
         $productRepository = new SalesOrderRepository($mockErpService);
-        $result = $productRepository->submitOrder($testOrder);
+        $result = $productRepository->submitOrder($testOrder, $testOrderItemCollection);
         
         $this->assertTrue($result);
     }

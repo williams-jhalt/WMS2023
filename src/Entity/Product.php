@@ -9,6 +9,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ProductRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Product
 {
     #[ORM\Id]
@@ -41,7 +42,7 @@ class Product
     private ?\DateTimeInterface $createdOn = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $updateOn = null;
+    private ?\DateTimeInterface $updatedOn = null;
 
     #[ORM\Column]
     private ?bool $deleted = null;
@@ -67,12 +68,16 @@ class Product
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?ProductDetail $detail = null;
 
-    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductAttachment::class)]
+    #[ORM\OneToMany(mappedBy: 'product', targetEntity: ProductAttachment::class, cascade: ['persist', 'remove'])]
     private Collection $attachments;
+
+    #[ORM\ManyToOne(inversedBy: 'products')]
+    private ?ProductType $productType = null;
 
     public function __construct()
     {
         $this->attachments = new ArrayCollection();
+        $this->detail = new ProductDetail();
     }
 
     public function getId(): ?int
@@ -176,14 +181,14 @@ class Product
         return $this;
     }
 
-    public function getUpdateOn(): ?\DateTimeInterface
+    public function getUpdatedOn(): ?\DateTimeInterface
     {
-        return $this->updateOn;
+        return $this->updatedOn;
     }
 
-    public function setUpdateOn(\DateTimeInterface $updateOn): static
+    public function setUpdatedOn(\DateTimeInterface $updatedOn): static
     {
-        $this->updateOn = $updateOn;
+        $this->updatedOn = $updatedOn;
 
         return $this;
     }
@@ -312,5 +317,33 @@ class Product
         }
 
         return $this;
+    }
+
+    public function setAttachments($attachments) {
+        $this->attachments = $attachments;
+        return $this;
+    }
+
+    public function getProductType(): ?ProductType
+    {
+        return $this->productType;
+    }
+
+    public function setProductType(?ProductType $productType): static
+    {
+        $this->productType = $productType;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAtValue() {
+        $this->createdOn = new \DateTime();
+        $this->updatedOn = new \DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdateAtValue() {
+        $this->updatedOn = new \DateTime();
     }
 }

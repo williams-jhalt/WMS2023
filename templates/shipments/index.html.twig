@@ -5,9 +5,10 @@
     <script type="text/javascript">
         $(document).ready(function () {
             var table = $('#shipmentsTable').DataTable({
-                "processing": true,
-                "serverSide": true,
-                "ajax": Routing.generate('shipments_list')
+                responsive: true,
+                {# "processing": true, #}
+                serverSide: true,
+                ajax: Routing.generate('shipments_list')
             });
             
             var isPackedChecked = false;

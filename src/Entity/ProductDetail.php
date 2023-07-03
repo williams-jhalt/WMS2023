@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\ProductDetailRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
 
 #[ORM\Entity(repositoryClass: ProductDetailRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class ProductDetail
 {
     #[ORM\Id]
@@ -55,6 +57,12 @@ class ProductDetail
 
     #[ORM\OneToMany(mappedBy: 'detail', targetEntity: ProductAttribute::class, cascade: ["persist", "remove"])]
     private Collection $attributes;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdOn = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $updatedOn = null;
 
     public function getId(): ?int
     {
@@ -215,5 +223,61 @@ class ProductDetail
         $this->mapPrice = $mapPrice;
 
         return $this;
+    }
+
+    public function addAttribute(ProductAttribute $attribute) {
+        if (!$this->attributes->contains($attribute)) {
+            $this->attributes[] = $attribute;
+            $attribute->setDetail($this);
+        }
+
+        return $this;
+    }
+
+    public function removeAttribute(ProductAttribute $attribute) {
+        if ($this->attributes->contains($attribute)) {
+            $this->attributes->removeElement($attribute);
+            // set the owning side to null (unless already changed)
+            if ($attribute->getDetail() === $this) {
+                $attribute->getDetail(null);
+            }
+        }
+
+        return $this;
+    }
+
+    public function getCreatedOn(): ?\DateTimeInterface
+    {
+        return $this->createdOn;
+    }
+
+    public function setCreatedOn(\DateTimeInterface $createdOn): static
+    {
+        $this->createdOn = $createdOn;
+
+        return $this;
+    }
+
+    public function getUpdatedOn(): ?\DateTimeInterface
+    {
+        return $this->updatedOn;
+    }
+
+    public function setUpdatedOn(\DateTimeInterface $updatedOn): static
+    {
+        $this->updatedOn = $updatedOn;
+
+        return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setCreatedAtValue() {
+        $this->createdOn = new \DateTime();
+        $this->updatedOn = new \DateTime();
+    }
+
+    #[ORM\PreUpdate]
+    public function setUpdateAtValue() {
+        $this->updatedOn = new \DateTime();
     }
 }

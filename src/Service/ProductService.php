@@ -3,6 +3,8 @@
 namespace App\Service;
 
 use App\Model\ProductImage;
+use App\Entity\Product;
+use App\Model\Wholesale\Product as WholesaleProduct;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\ErpService as ErpService;
 use App\Service\WholesaleService;
@@ -112,7 +114,8 @@ class ProductService {
                 ->setWidth($wholesaleProduct->getWidth())
                 ->setDiameter($wholesaleProduct->getDiameter())
                 ->setWeight($wholesaleProduct->getWeight())
-                ->setKeywords($wholesaleProduct->getKeywords());
+                ->setKeywords($wholesaleProduct->getKeywords())
+                ->setName($wholesaleProduct->getName());
 
         $wholesaleImages = $this->wholesale->getProductImageRepository()->findBySku($product->getItemNumber());
 
@@ -155,106 +158,120 @@ class ProductService {
      */
     private function buildProductFromErp(\App\Model\Erp\Product $erpProduct) {
 
-        // create new Product model
+        // create new Product model and populate with data from ERP
         $product = new \App\Model\Product();
         $this->loadProductFromErp($product, $erpProduct); // copy information from ERP into new product model
 
+        // load data from wholesale site first
         $wholesaleProduct = $this->wholesale->getProductRepository()->find($product->getItemNumber()); // look for item on Wholesale
         if ($wholesaleProduct !== null) {
             $this->loadProductFromWholesale($product, $wholesaleProduct); // if it exists add the data to the model
-        } else {
-            return null;
         }
 
+        // override any dimensions from the local cubiscan database
         $dimensions = $this->em->getRepository(\App\Entity\ProductDimension::class)->findOneByBarcode($product->getBarcode()); // look for item in local cubiscan db
         if ($dimensions !== null) {
             $this->loadProductFromDimensions($product, $dimensions); // if it exists add the data to the model
         }
 
+        // if product exists in local database load it or create a new product
         $localProduct = $this->em->getRepository(\App\Entity\Product::class)->findOneByItemNumber($product->getItemNumber());
 
-        if ($localProduct == null || $localProduct->getDetail()->getUpdatedOn() < $wholesaleProduct->getUpdatedOn()) {
+        if ($localProduct == null) {
             $localProduct = new \App\Entity\Product();
             $localProduct->setItemNumber($product->getItemNumber());
+        }
 
-            $localProduct->setName($product->getName());
-            $localProduct->setWholesalePrice($product->getWholesalePrice());
-            $localProduct->setReleaseDate($product->getReleaseDate());
-            $localProduct->setBinLocation($product->getBinLocation());
-            $localProduct->setQuantityOnHand($product->getQuantityOnHand());
-            $localProduct->setQuantityCommitted($product->getQuantityCommitted());
-            $localProduct->setDeleted($product->getDeleted());
-            $localProduct->setWebItem($product->getWebItem());
-            $localProduct->setWarehouse($product->getWarehouse());
-            $localProduct->setUnitOfMeasure($product->getUnitOfMeasure());
-            $localProduct->setBarcode($product->getBarcode());
+        $localProduct->setName($product->getName());
+        $localProduct->setWholesalePrice($product->getWholesalePrice());
+        $localProduct->setReleaseDate($product->getReleaseDate());
+        $localProduct->setBinLocation($product->getBinLocation());
+        $localProduct->setQuantityOnHand($product->getQuantityOnHand());
+        $localProduct->setQuantityCommitted($product->getQuantityCommitted());
+        $localProduct->setDeleted($product->getDeleted());
+        $localProduct->setWebItem($product->getWebItem());
+        $localProduct->setWarehouse($product->getWarehouse());
+        $localProduct->setUnitOfMeasure($product->getUnitOfMeasure());
+        $localProduct->setBarcode($product->getBarcode());
 
-            if (!empty($product->getManufacturerCode())) {
+        if (!empty($product->getManufacturerCode())) {
 
-                $manufacturer = $this->em->getRepository(\App\Entity\Manufacturer::class)->findOneByCode($product->getManufacturerCode());
+            $manufacturer = $this->em->getRepository(\App\Entity\Manufacturer::class)->findOneByCode($product->getManufacturerCode());
 
-                if ($manufacturer == null) {
-                    $manufacturer = new \App\Entity\Manufacturer();
-                    $manufacturer->setCode($product->getManufacturerCode());
-                    $manufacturer->setName($product->getManufacturerCode());
-                    $whsManufacturer = $this->wholesale->getManufacturerRepository()->find($product->getManufacturerCode());
-                    if ($whsManufacturer !== null) {
-                        $manufacturer->setName($whsManufacturer->getName());
-                        $manufacturer->setActive($whsManufacturer->getActive());
-                    }
-                    $this->em->persist($manufacturer);
-                    $this->em->flush($manufacturer);
+            if ($manufacturer == null) {
+                $manufacturer = new \App\Entity\Manufacturer();
+                $manufacturer->setCode($product->getManufacturerCode());
+                $manufacturer->setName($product->getManufacturerCode());
+                $whsManufacturer = $this->wholesale->getManufacturerRepository()->find($product->getManufacturerCode());
+                if ($whsManufacturer !== null) {
+                    $manufacturer->setName($whsManufacturer->getName());
+                    $manufacturer->setActive($whsManufacturer->getActive());
                 }
-
-                $localProduct->setManufacturer($manufacturer);
+                $this->em->persist($manufacturer);
+                $this->em->flush($manufacturer);
             }
 
-            if (!empty($product->getProductTypeCode())) {
+            $localProduct->setManufacturer($manufacturer);
+        }
 
-                $type = $this->em->getRepository(\App\Entity\ProductType::class)->findOneByCode($product->getProductTypeCode());
+        if (!empty($product->getProductTypeCode())) {
 
-                if ($type == null) {
-                    $type = new \App\Entity\ProductType();
-                    $type->setCode($product->getProductTypeCode());
-                    $type->setName($product->getProductTypeCode());
-                    $whsType = $this->wholesale->getProductTypeRepository()->find($product->getProductTypeCode());
-                    if ($whsType !== null) {
-                        $type->setName($whsType->getName());
-                        $type->setActive($whsType->getActive());
-                    }
-                    $this->em->persist($type);
-                    $this->em->flush($type);
+            $type = $this->em->getRepository(\App\Entity\ProductType::class)->findOneByCode($product->getProductTypeCode());
+
+            if ($type == null) {
+                $type = new \App\Entity\ProductType();
+                $type->setCode($product->getProductTypeCode());
+                $type->setName($product->getProductTypeCode());
+                $whsType = $this->wholesale->getProductTypeRepository()->find($product->getProductTypeCode());
+                if ($whsType !== null) {
+                    $type->setName($whsType->getName());
+                    $type->setActive($whsType->getActive());
                 }
-
-                $localProduct->setProductType($type);
+                $this->em->persist($type);
+                $this->em->flush($type);
             }
 
-            $attachments = $localProduct->getAttachments();
+            $localProduct->setProductType($type);
+        }
 
-            foreach ($product->getImages() as $image) {
-                $attachment = new \App\Entity\ProductAttachment();
-                $attachment->setUrl($image->getImageUrl());
-                $attachment->setExplicit($image->getExplicit());
-                $attachment->setFileType($image->getFileType());
-                $attachment->setFilename($image->getFilename());
-                $attachment->setProduct($localProduct);
+        // TODO make this update the attachments if changes detected
+        $attachments = $localProduct->getAttachments();
+
+        foreach ($product->getImages() as $image) {            
+            $attachment = new \App\Entity\ProductAttachment();
+            $attachment->setUrl($image->getImageUrl());
+            $attachment->setExplicit($image->getExplicit());
+            $attachment->setFileType($image->getFileType());
+            $attachment->setFilename($image->getFilename());
+            $attachment->setProduct($localProduct);
+            $exists = false;
+            foreach ($attachments as $test) {
+                if ($test->getUrl() == $attachment->getUrl()) {
+                    $exists = true;
+                    break;
+                }
+            }
+
+            if (!$exists) {
                 $attachments[] = $attachment;
             }
+        }
 
-            $localProduct->setAttachments($attachments);
+        $localProduct->setAttachments($attachments);
 
-            $detail = $localProduct->getDetail();
+        $detail = $localProduct->getDetail();
 
-            $detail->setName($wholesaleProduct->getName());
-            $detail->setDescription($wholesaleProduct->getDescription());
-            $detail->setBrand($wholesaleProduct->getBrand());
-            $detail->setPackageHeight($product->getHeight());
-            $detail->setPackageLength($product->getLength());
-            $detail->setPackageWidth($product->getWidth());
-            $detail->setPackageWeight($product->getWeight());
-            $detail->setDimUnit("IN");
-            $detail->setWeightUnit("LB");
+        $detail->setPackageHeight($product->getHeight());
+        $detail->setPackageLength($product->getLength());
+        $detail->setPackageWidth($product->getWidth());
+        $detail->setPackageWeight($product->getWeight());
+        $detail->setDimUnit("IN");
+        $detail->setWeightUnit("LB");
 
+        if ($wholesaleProduct != null) {
+            (!empty($wholesaleProduct->getName())) ? $detail->setName($wholesaleProduct->getName()) : null;
+            (!empty($wholesaleProduct->getDescription())) ? $detail->setDescription($wholesaleProduct->getDescription()) : null;
+            (!empty($wholesaleProduct->getBrand())) ? $detail->setBrand($wholesaleProduct->getBrand()) : null;
             (!empty($wholesaleProduct->getProductLength())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'product_length', $wholesaleProduct->getProductLength())) : null;
             (!empty($wholesaleProduct->getInsertableLength())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'insertable_length', $wholesaleProduct->getInsertableLength())) : null;
             (!empty($wholesaleProduct->getRealistic())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'realistic', $wholesaleProduct->getRealistic())) : null;
@@ -264,9 +281,15 @@ class ProductService {
             (!empty($wholesaleProduct->getVibrating())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'vibrating', $wholesaleProduct->getVibrating())) : null;
             (!empty($wholesaleProduct->getDoubleEnded())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'double_ended', $wholesaleProduct->getDoubleEnded())) : null;
             (!empty($wholesaleProduct->getCircumference())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'circumference', $wholesaleProduct->getCircumference())) : null;
+        } else {
+            $detail->setName($localProduct->getName());
+        }
 
-            $localProduct->setDetail($detail);
+        $localProduct->setDetail($detail);
 
+        $uow = $this->em->getUnitOfWork();
+
+        if ($uow->computeChangeSets()) {
             $this->em->persist($localProduct);
             $this->em->flush();
         }

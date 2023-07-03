@@ -25,11 +25,6 @@ class Carton
     #[ORM\Column(name: "ship_width", nullable: true)]
     private ?float $width = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
-
     public function getUcc(): ?string
     {
         return $this->ucc;

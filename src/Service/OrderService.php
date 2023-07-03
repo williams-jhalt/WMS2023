@@ -4,16 +4,15 @@ namespace App\Service;
 
 use App\Model\SalesOrder;
 use DateTime;
-use Doctrine\ORM\EntityManagerInterface;
-use App\Service\ConnectshipService;
 use App\Model\Erp\SalesOrder as SalesOrder2;
 use App\Model\Erp\SalesOrderItem as SalesOrderItem;
+use App\Model\Erp\SalesOrderItemCollection;
 use App\Model\Erp\Shipment;
 use App\Model\Erp\ShipmentItem;
 use App\Model\Erp\ShipmentPackage;
 use App\Service\ErpService as ErpService;
 use App\Model\Wms\Weborder;
-use App\Service\WmsService;
+use App\Repository\CartonRepository;
 
 class OrderService {
 
@@ -26,11 +25,6 @@ class OrderService {
     private $erp;
 
     /**
-     * @var ConnectshipService
-     */
-    private $connectship;
-
-    /**
      * @var WmsService
      */
     private $muffsWms;
@@ -41,16 +35,15 @@ class OrderService {
     private $williamsWms;
 
     /**
-     * @var EntityManagerInterface
+     * @var CartonRepository
      */
-    private $em;
+    private $cartonRepo;
 
-    public function __construct(ErpService $erp, ConnectshipService $connectship, WmsService $muffsWms, WmsService $williamsWms, EntityManagerInterface $em) {
+    public function __construct(ErpService $erp, MuffsWmsService $muffsWms, WilliamsWmsService $williamsWms, CartonRepository $cartonRepo) {
         $this->erp = $erp;
-        $this->connectship = $connectship;
         $this->muffsWms = $muffsWms;
         $this->williamsWms = $williamsWms;
-        $this->em = $em;
+        $this->cartonRepo = $cartonRepo;
     }
 
     /**
@@ -111,7 +104,7 @@ class OrderService {
      */
     public function getCartons($orderNumber) {
 
-        $repo = $this->em->getRepository('AppBundle:Carton');
+        $repo = $this->cartonRepo;
         $cartons = $this->erp->getShipmentRepository()->getPackages($orderNumber)->getShipmentPackages();
 
         foreach ($cartons as $carton) {
@@ -341,10 +334,11 @@ class OrderService {
     /**
      * 
      * @param SalesOrder $order
+     * @param SalesOrderItemCollection $items
      * @return boolean
      */
-    public function submitOrder(SalesOrder $order) {
-        return $this->erp->getSalesOrderRepository()->submitOrder($order);
+    public function submitOrder(SalesOrder $order, SalesOrderItemCollection $items) {
+        return $this->erp->getSalesOrderRepository()->submitOrder($order, $items);
     }
 
 }

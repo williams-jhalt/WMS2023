@@ -3,7 +3,7 @@
 namespace App\Model\Erp;
 
 use JMS\Serializer\Annotation as JMS;
-use Symfony\Component\Validator\Constraints\DateTime;
+use DateTime;
 
 class Shipment extends SalesOrder {
 

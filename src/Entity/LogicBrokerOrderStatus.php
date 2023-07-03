@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\LogicBrokerOrderStatusRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use DateTime;
 
 #[ORM\Table(name: "logicbroker_order_status")]
 #[ORM\Entity(repositoryClass: LogicBrokerOrderStatusRepository::class)]
@@ -98,12 +99,12 @@ class LogicBrokerOrderStatus
         return $this;
     }
 
-    public function getOrderDate(): ?string
+    public function getOrderDate(): ?DateTime
     {
         return $this->orderDate;
     }
 
-    public function setOrderDate(string $orderDate): static
+    public function setOrderDate(DateTime $orderDate): static
     {
         $this->orderDate = $orderDate;
 

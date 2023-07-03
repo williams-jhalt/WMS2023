@@ -6,7 +6,14 @@
         $(document).ready(function () {
             $('#committedItems').DataTable({
                 responsive: true,
-                order: [[3, 'desc']]
+                order: [[3, 'desc']],
+                ajax: '{{path('product_lookup_committed_data')}}',
+                columns: [
+                    { data: 'itemNumber' },
+                    { data: 'name' },
+                    { data: 'binLocation' },
+                    { data: 'quantityCommitted' }
+                ]
             });
         });
     </script>
@@ -29,21 +36,14 @@
                 <th>Committed</th>
             </tr>
         </thead>
-        <tbody>
-
-            {% for item in items %}
-
-                <tr>
-                    <td>{{ item.itemNumber }}</td>
-                    <td>{{ item.name }}</td>
-                    <td>{{ item.binLocation }}</td>
-                    <td>{{ item.quantityCommitted }}</td>
-                </tr>
-
-            {% endfor %}
-
-        </tbody>
-
+        <tfoot>
+            <tr>
+                <th>SKU</th>
+                <th>Name</th>
+                <th>Bin</th>
+                <th>Committed</th>
+            </tr>
+        </tfoot>
     </table>
 
     <p><a href="{{ path('product_lookup_index') }}">Back</a></p>

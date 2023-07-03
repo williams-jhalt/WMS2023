@@ -43,12 +43,12 @@ services:
 
     App\Service\ErpService:
         arguments:
-            $server: ""
-            $username: ""
-            $password: ""
-            $company: ""
-            $appname: ""
-            $warehouse: ""
+            $server: "%env(ERP_SERVER)%"
+            $username: "%env(ERP_USERNAME)%"
+            $password: "%env(ERP_PASSWORD)%"
+            $company: "%env(ERP_COMPANY)%"
+            $appname: "%env(ERP_APPNAME)%"
+            $warehouse: "%env(ERP_WAREHOUSE)%"
 
     App\Service\WholesaleService:
         arguments:

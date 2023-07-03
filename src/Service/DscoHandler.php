@@ -3,8 +3,9 @@
 namespace App\Service;
 
 use DateTime;
-use App\Model\Erp\Order as ErpOrder;
-use App\Model\Erp\OrderItem as ErpOrderItem;
+use App\Model\Erp\SalesOrder as ErpOrder;
+use App\Model\Erp\SalesOrderItem as ErpOrderItem;
+use App\Model\Erp\SalesOrderItemCollection;
 use App\Service\ErpService as ErpService;
 use App\Adapter\Dsco\AbstractInventoryAdapter;
 use App\Entity\DscoOrderStatus as OrderStatus;
@@ -61,7 +62,7 @@ class DscoHandler implements DscoHandlerInterface {
         $salesOrder->setShipToPhone($shipToAddress->getPhone());
         $salesOrder->setShipToState($shipToAddress->getState());
         $salesOrder->setShipToZip($shipToAddress->getZip());
-        $salesOrder->setWebOrderNumber($order->getIdentifier()->getLogicBrokerKey());
+        $salesOrder->setWebReferenceNumber($order->getIdentifier()->getDscoKey());
         $salesOrder->setCustomerPurchaseOrder($order->getPartnerPO());
 
         if (array_search($order->getShipmentInfos()[0]->getCarrierCode(), $validShipViaCodes)) {
@@ -80,9 +81,9 @@ class DscoHandler implements DscoHandlerInterface {
             $items[] = $item;
         }
 
-        $salesOrder->setItems($items);
+        $salesOrderItems = new SalesOrderItemCollection($items);
 
-        $this->service->getSalesOrderRepository()->submitOrder($salesOrder);
+        $this->service->getSalesOrderRepository()->submitOrder($salesOrder, $salesOrderItems);
 
         return $order->getIdentifier()->getDscoKey();
     }

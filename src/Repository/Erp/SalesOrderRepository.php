@@ -3,7 +3,6 @@
 namespace App\Repository\Erp;
 
 use DateTime;
-use App\Model\Erp\Order;
 use App\Model\Erp\SalesOrder;
 use App\Model\Erp\SalesOrderCollection;
 use App\Model\Erp\SalesOrderItem;
@@ -72,6 +71,7 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
             $item->setShipToCountry($erpItem->country_code);
             $item->setShipToZip($erpItem->postal_code);
             $item->setSourceCode($erpItem->source_code);
+            $item->setResidential($erpItem->residential);
             $result[] = $item;
         }
 
@@ -191,6 +191,7 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
             $item->setShipToCountry($erpItem->country_code);
             $item->setShipToZip($erpItem->postal_code);
             $item->setSourceCode($erpItem->source_code);
+            $item->setResidential($erpItem->residential);
         }
 
         return $item;
@@ -262,6 +263,7 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
             $item->setShipToCountry($erpItem->country_code);
             $item->setShipToZip($erpItem->postal_code);
             $item->setSourceCode($erpItem->source_code);
+            $item->setResidential($erpItem->residential);
         }
 
         return $item;
@@ -302,13 +304,14 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
 
     /**
      * 
-     * @param Order $order
+     * @param SalesOrder $order
+     * @param SalesOrderItemCollection $items
      * @return boolean
      */
-    public function submitOrder(Order $order) {
+    public function submitOrder(SalesOrder $order, SalesOrderItemCollection $items) {
 
         $data = array(
-            'order_ext' => $order->getWebOrderNumber(),
+            'order_ext' => $order->getWebReferenceNumber(),
             'cu_po' => $order->getCustomerPurchaseOrder(),
             'customer' => $order->getCustomerNumber(),
             's_name' => $order->getShipToName(),
@@ -325,14 +328,14 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
             'company_oe' => $this->erp->getCompany(),
             'warehouse' => $this->erp->getWarehouse(),
             'ship_via_code' => $order->getShipViaCode(),
-            'residential' => $order->getResidential()
+            'residential' => $order->isResidential()
         );
 
         $this->erp->create('ec_oehead', array($data), false);
 
         $itemData = array();
 
-        foreach ($order->getItems() as $key => $item) {
+        foreach ($items as $key => $item) {
 
             $erpItem = $this->erp
                     ->getProductRepository()
@@ -341,7 +344,7 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
             if ($erpItem) {
             
                 $itemData[] = array(
-                    'order_ext' => $order->getWebOrderNumber(),
+                    'order_ext' => $order->getWebReferenceNumber(),
                     'customer' => $order->getCustomerNumber(),
                     'line' => empty($item->getLineNumber()) ? $key + 1 : $item->getLineNumber(),
                     'item' => $item->getItemNumber(),

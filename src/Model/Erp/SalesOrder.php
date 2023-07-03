@@ -127,6 +127,12 @@ class SalesOrder {
      * @var string
      */
     protected $sourceCode;
+    
+    /**
+     * @JMS\Type("bool")
+     * @var string
+     */
+    protected $residential;
 
     /**
      * 
@@ -485,6 +491,22 @@ class SalesOrder {
      */
     public function setSourceCode($sourceCode) {
         $this->sourceCode = $sourceCode;
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isResidential() {
+        return $this->residential;
+    }
+
+    /**
+     * @param bool $residential
+     * @return SalesOrder
+     */
+    public function setResidential(bool $residential) {
+        $this->residential = $residential;
         return $this;
     }
 

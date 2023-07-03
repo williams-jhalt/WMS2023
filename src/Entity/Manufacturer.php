@@ -22,7 +22,7 @@ class Manufacturer
     private ?string $name = null;
 
     #[ORM\Column]
-    private ?bool $active = null;
+    private ?bool $active = false;
 
     #[ORM\OneToMany(mappedBy: 'manufacturer', targetEntity: Product::class)]
     private Collection $products;

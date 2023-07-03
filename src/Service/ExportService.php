@@ -8,7 +8,6 @@ use SplFileInfo;
 use SplFileObject;
 use App\Service\ConnectshipService;
 use App\Service\ErpService as ErpService;
-use App\Service\WmsService;
 
 class ExportService {
 
@@ -26,27 +25,13 @@ class ExportService {
 
     /**
      *
-     * @var WmsService
-     */
-    private $muffsWms;
-
-    /**
-     *
-     * @var WmsService
-     */
-    private $williamsWms;
-
-    /**
-     *
      * @var EntityManagerInterface
      */
     private $em;
 
-    public function __construct(ErpService $erp, ConnectshipService $connectship, WmsService $muffsWms, WmsService $williamsWms, EntityManagerInterface $em) {
+    public function __construct(ErpService $erp, ConnectshipService $connectship, EntityManagerInterface $em) {
         $this->erp = $erp;
         $this->connectship = $connectship;
-        $this->muffsWms = $muffsWms;
-        $this->williamsWms = $williamsWms;
         $this->em = $em;
     }
 
@@ -67,8 +52,8 @@ class ExportService {
         $headerFh = $headerFile->openFile("wb");
         $detailFh = $detailFile->openFile("wb");
 
-        $headerFh->fputcsv(['orderNumber', 'recordSequence', 'webReferenceNumber', 'customerReferenceNumber', 'invoiceDate', 'customerNumber', 'grossInvoiceAmount', 'shippingAndHandling', 'freightCharge', 'netInvoiceAmount', 'trackingNumber', 'shippingMethod']);
-        $detailFh->fputcsv(['orderNumber', 'recordSequence', 'itemNumber', 'qtyOrdered', 'qtyBilled', 'unitOfMeasure', 'price']);
+        $headerFh->fputcsv(['orderNumber', 'recordSequence', 'webReferenceNumber', 'customerReferenceNumber', 'invoiceDate', 'customerNumber', 'grossInvoiceAmount', 'shippingAndHandling', 'freightCharge', 'netInvoiceAmount', 'trackingNumber', 'shippingMethod'], ",", "\"", "\\", "\n");
+        $detailFh->fputcsv(['orderNumber', 'recordSequence', 'itemNumber', 'qtyOrdered', 'qtyBilled', 'unitOfMeasure', 'price'], ",", "\"", "\\", "\n");
 
         $offset = 0;
         $limit = 1000;
@@ -106,7 +91,7 @@ class ExportService {
                     $invoice->getNetInvoiceAmount(),
                     $trackingNumber,
                     $shipment->getShipViaCode()
-                ]);
+                ], ",", "\"", "\\", "\n");
 
                 $items = $repo->getItems($invoice->getOrderNumber(), $invoice->getRecordSequence())->getItems();
 
@@ -119,7 +104,7 @@ class ExportService {
                         $item->getQuantityBilled(),
                         $item->getUnitOfMeasure(),
                         $item->getPrice()
-                    ]);
+                    ], ",", "\"", "\\", "\n");
                 }
             }
             $offset += $limit;
@@ -152,7 +137,7 @@ class ExportService {
             'state',
             'country',
             'shipDate'
-        ]);
+        ], ",", "\"", "\\", "\n");
         
         foreach ($packages as $package) {
             $outputFh->fputcsv([
@@ -166,7 +151,7 @@ class ExportService {
                 $package->getConsigneeState(),
                 $package->getConsigneeCountry(),
                 $package->getShipDate()
-            ]);
+            ], ",", "\"", "\\", "\n");
         }
 
         $outputFh = null;

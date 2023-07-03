@@ -126,7 +126,7 @@ class ProductRepository {
 
     private function loadProduct($data) {
         
-        if ($data == null) {
+        if ($data == null || $data == "Product Not Found") {
             return null;
         }
         

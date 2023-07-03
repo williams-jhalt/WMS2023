@@ -76,7 +76,7 @@ class ProductRepository extends AbstractRepository implements ProductRepositoryI
      * @param integer $offset
      * @return ProductCollection
      */
-    public function findByTextSearch($searchTerms, $limit = 1000, $offset = 0) {
+    public function findByTextSearch($searchTerms, $limit = 1000, $offset = 0): ProductCollection {
 
         $query = "FOR EACH item NO-LOCK "
                 . "WHERE item.company_it = '{$this->erp->getCompany()}' "

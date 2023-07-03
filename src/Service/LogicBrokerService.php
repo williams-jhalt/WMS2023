@@ -8,7 +8,7 @@ use App\Adapter\LogicBroker\CsvInventoryAdapter;
 use App\Adapter\LogicBroker\CsvInvoiceAdapter;
 use App\Adapter\LogicBroker\CsvOrderAdapter;
 use App\Adapter\LogicBroker\CsvShipmentAdapter;
-use App\Entity\LogicBrokerOrderStatus;
+use App\Entity\LogicBrokerOrderStatus as OrderStatus;
 use App\Service\LogicBrokerHandlerInterface;
 use SplFileObject;
 
