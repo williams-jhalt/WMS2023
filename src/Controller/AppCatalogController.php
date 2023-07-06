@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use App\Entity\Product;
+use App\Form\ProductDetailType;
+use App\Service\ProductService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,31 +21,20 @@ class AppCatalogController extends AbstractController
     }
 
 
-    #[Route('/catalog/', name: 'catalog_homepage')]
+    #[Route('/catalog', name: 'catalog_homepage')]
     public function index(): Response
     {
         return $this->render('catalog/index.html.twig');
     }
 
     #[Route('/catalog/search', name: 'catalog_search')]
-    public function searchAction(Request $request): Response
+    public function searchAction(Request $request, ProductService $service): Response
     {
 
         // TODO
         $searchTerms = $request->get('searchTerms');
 
-        $service = $this->wholesaleService->getProductRepository();
-
-        $wholesaleProducts = $service->findBySearchTerms($searchTerms);
-
-        $products = [];
-
-        foreach ($wholesaleProducts as $p) {
-            $product = new Product();
-            $product->setItemNumber($p->getSku());
-
-            $products[] = $product;
-        }
+        $products = $service->findBySearchTerms($searchTerms);
 
         return $this->render('catalog/search.html.twig', [
             'searchTerms' => $searchTerms,
@@ -52,16 +43,18 @@ class AppCatalogController extends AbstractController
     }
 
     #[Route('/catalog/edit/{id}', name: 'catalog_edit')]
-    public function editAction(int $id, Request $request): Response
+    public function editAction(int $id, Request $request, ProductService $service): Response
     {
 
-        // TODO
-        $product = "";
-        $formView = "";
+        $product = $service->find($id);
+
+        $detail = $product->getDetail();
+
+        $form = $this->createForm(ProductDetailType::class, $detail);
 
         return $this->render('catalog/edit.html.twig', [
             'product' => $product,
-            'form' => $formView
+            'form' => $form->createView()
         ]);
     }
 

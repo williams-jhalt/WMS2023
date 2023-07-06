@@ -29,7 +29,7 @@ class AppGenerateReportsCommand extends Command
         $output->write("Beginning report generation...\n");
         try {
             $this->reportService->generateReports();
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $output->writeln("There was an error generating the reports: " . $e->getMessage());
             $output->write($e->getTraceAsString());
         }

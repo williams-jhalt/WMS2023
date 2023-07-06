@@ -2,9 +2,7 @@
 
 namespace App\Service;
 
-use App\Model\ProductImage;
-use App\Entity\Product;
-use App\Model\Wholesale\Product as WholesaleProduct;
+use App\Repository\ProductRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Service\ErpService as ErpService;
 use App\Service\WholesaleService;
@@ -24,21 +22,31 @@ class ProductService {
 
     /**
      *
-     * @var EntityManager
+     * @var EntityManagerInterface
      */
     private $em;
 
-    public function __construct(ErpService $erp, WholesaleService $wholesale, EntityManagerInterface $em) {
+    /**
+     * @var ProductRepository
+     */
+    private $productRepository;
+
+    public function __construct(ErpService $erp, WholesaleService $wholesale, EntityManagerInterface $em, ProductRepository $productRepository) {
         $this->erp = $erp;
         $this->wholesale = $wholesale;
         $this->em = $em;
+        $this->productRepository = $productRepository;
     }
 
-    public function findBySearchTerms($searchTerms, $limit = 25, $offset = 0) {
+    public function find(int $id) {
+        return $this->productRepository->find($id);
+    }
+
+    public function findBySearchTerms($searchTerms, $limit = 25, $offset = 0, $company = null, $warehouse = null) {
 
         $repo = $this->erp->getProductRepository();
 
-        $products = $repo->findByTextSearch($searchTerms, $limit, $offset)->getProducts();
+        $products = $repo->findByTextSearch($searchTerms, $limit, $offset, $company, $warehouse)->getProducts();
 
         $result = array();
 
@@ -52,11 +60,11 @@ class ProductService {
         return $result;
     }
 
-    public function getByItemNumber($itemNumber) {
+    public function getByItemNumber($itemNumber, $company = null, $warehouse = null) {
 
         $repo = $this->erp->getProductRepository();
 
-        $product = $repo->getByItemNumber($itemNumber);
+        $product = $repo->getByItemNumber($itemNumber, $company, $warehouse);
 
         return $this->buildProductFromErp($product);
     }
@@ -67,11 +75,11 @@ class ProductService {
      * 
      * @return \App\Model\Product[]
      */
-    public function getCommittedProducts($limit = 25, $offset = 0) {
+    public function getCommittedProducts($limit = 25, $offset = 0, $company = null, $warehouse = null) {
 
         $repo = $this->erp->getProductRepository();
 
-        $products = $repo->findCommittedItems($limit, $offset)->getProducts();
+        $products = $repo->findCommittedItems($limit, $offset, $company, $warehouse)->getProducts();
 
         $result = array();
 
@@ -156,7 +164,7 @@ class ProductService {
      * @param \App\Model\Erp\Product $erpProduct
      * @return \App\Entity\Product
      */
-    private function buildProductFromErp(\App\Model\Erp\Product $erpProduct) {
+    private function buildProductFromErp(\App\Model\Erp\Product $erpProduct): \App\Entity\Product {
 
         // create new Product model and populate with data from ERP
         $product = new \App\Model\Product();
@@ -208,7 +216,7 @@ class ProductService {
                     $manufacturer->setActive($whsManufacturer->getActive());
                 }
                 $this->em->persist($manufacturer);
-                $this->em->flush($manufacturer);
+                $this->em->flush();
             }
 
             $localProduct->setManufacturer($manufacturer);
@@ -228,7 +236,7 @@ class ProductService {
                     $type->setActive($whsType->getActive());
                 }
                 $this->em->persist($type);
-                $this->em->flush($type);
+                $this->em->flush();
             }
 
             $localProduct->setProductType($type);
@@ -271,30 +279,162 @@ class ProductService {
         if ($wholesaleProduct != null) {
             (!empty($wholesaleProduct->getName())) ? $detail->setName($wholesaleProduct->getName()) : null;
             (!empty($wholesaleProduct->getDescription())) ? $detail->setDescription($wholesaleProduct->getDescription()) : null;
-            (!empty($wholesaleProduct->getBrand())) ? $detail->setBrand($wholesaleProduct->getBrand()) : null;
-            (!empty($wholesaleProduct->getProductLength())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'product_length', $wholesaleProduct->getProductLength())) : null;
-            (!empty($wholesaleProduct->getInsertableLength())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'insertable_length', $wholesaleProduct->getInsertableLength())) : null;
-            (!empty($wholesaleProduct->getRealistic())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'realistic', $wholesaleProduct->getRealistic())) : null;
-            (!empty($wholesaleProduct->getBalls())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'balls', $wholesaleProduct->getBalls())) : null;
-            (!empty($wholesaleProduct->getSuctionCup())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'suction_cup', $wholesaleProduct->getSuctionCup())) : null;
-            (!empty($wholesaleProduct->getHarness())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'harness', $wholesaleProduct->getHarness())) : null;
-            (!empty($wholesaleProduct->getVibrating())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'vibrating', $wholesaleProduct->getVibrating())) : null;
-            (!empty($wholesaleProduct->getDoubleEnded())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'double_ended', $wholesaleProduct->getDoubleEnded())) : null;
-            (!empty($wholesaleProduct->getCircumference())) ? $detail->addAttribute(new \App\Entity\ProductAttribute($detail, 'circumference', $wholesaleProduct->getCircumference())) : null;
+            (!empty($wholesaleProduct->getBrand())) ? $detail->setBrand($wholesaleProduct->getBrand()) : null;           
         } else {
             $detail->setName($localProduct->getName());
         }
 
         $localProduct->setDetail($detail);
 
-        $uow = $this->em->getUnitOfWork();
+        $this->em->persist($localProduct);
+        $this->em->flush();
 
-        if ($uow->computeChangeSets()) {
-            $this->em->persist($localProduct);
-            $this->em->flush();
+        if ($wholesaleProduct != null) {
+            $this->_updateWholesaleAttributes($localProduct, $wholesaleProduct);
         }
 
         return $localProduct;
+    }
+
+    private function _updateWholesaleAttributes(\App\Entity\Product $product, \App\Model\Wholesale\Product $wholesaleProduct) {
+        $attributes = $product->getDetail()->getAttributes();
+        $attributesFound = [];
+
+        foreach ($attributes as $attribute) {
+
+            switch ($attribute->getName()) {
+                case "product_length":
+                    $attributesFound[] = "product_length";
+                    $attribute->setValue($wholesaleProduct->getProductLength());                
+                    break;
+                case "insertable_length":
+                    $attributesFound[] = "insertable_length";
+                    $attribute->setValue($wholesaleProduct->getInsertableLength());
+                    break;
+                case "realistic":
+                    $attributesFound[] = "realistic";
+                    $attribute->setValue($wholesaleProduct->getRealistic());
+                    break;
+                case "balls":
+                    $attributesFound[] = "balls";
+                    $attribute->setValue($wholesaleProduct->getBalls());
+                    break;                    
+                case "suction_cup":
+                    $attributesFound[] = "suction_cup";
+                    $attribute->setValue($wholesaleProduct->getSuctionCup());
+                    break;                    
+                case "harness":
+                    $attributesFound[] = "harness";
+                    $attribute->setValue($wholesaleProduct->getHarness());
+                    break;
+                case "vibrating":
+                    $attributesFound[] = "vibrating";
+                    $attribute->setValue($wholesaleProduct->getVibrating());
+                    break;                    
+                case "double_ended":
+                    $attributesFound[] = "double_ended";
+                    $attribute->setValue($wholesaleProduct->getDoubleEnded());
+                    break;                    
+                case "circumference":
+                    $attributesFound[] = "circumference";
+                    $attribute->setValue($wholesaleProduct->getCircumference());
+                    break;
+
+            }
+
+            $this->em->persist($attribute);
+        }
+
+        if (!array_search("product_length", $attributesFound)) {
+            $attribute = new \App\Entity\ProductAttribute(
+                $product->getDetail(),
+                "product_length",
+                $wholesaleProduct->getProductLength()
+            );
+
+            $this->em->persist($attribute);
+        }
+
+        if (!array_search("insertable_length", $attributesFound)) {
+            $attribute = new \App\Entity\ProductAttribute(
+                $product->getDetail(),
+                "insertable_length",
+                $wholesaleProduct->getInsertableLength()
+            );
+
+            $this->em->persist($attribute);
+        }
+
+        if (!array_search("realistic", $attributesFound)) {
+            $attribute = new \App\Entity\ProductAttribute(
+                $product->getDetail(),
+                "realistic",
+                $wholesaleProduct->getRealistic()
+            );
+
+            $this->em->persist($attribute);
+        }
+
+        if (!array_search("balls", $attributesFound)) {
+            $attribute = new \App\Entity\ProductAttribute(
+                $product->getDetail(),
+                "balls",
+                $wholesaleProduct->getBalls()
+            );
+
+            $this->em->persist($attribute);
+        }
+
+        if (!array_search("suction_cup", $attributesFound)) {
+            $attribute = new \App\Entity\ProductAttribute(
+                $product->getDetail(),
+                "suction_cup",
+                $wholesaleProduct->getSuctionCup()
+            );
+
+            $this->em->persist($attribute);
+        }
+
+        if (!array_search("harness", $attributesFound)) {
+            $attribute = new \App\Entity\ProductAttribute(
+                $product->getDetail(),
+                "harness",
+                $wholesaleProduct->getHarness()
+            );
+
+            $this->em->persist($attribute);
+        }
+
+        if (!array_search("vibrating", $attributesFound)) {
+            $attribute = new \App\Entity\ProductAttribute(
+                $product->getDetail(),
+                "vibrating",
+                $wholesaleProduct->getVibrating()
+            );
+
+            $this->em->persist($attribute);
+        }
+
+        if (!array_search("double_ended", $attributesFound)) {
+            $attribute = new \App\Entity\ProductAttribute(
+                $product->getDetail(),
+                "double_ended",
+                $wholesaleProduct->getDoubleEnded()
+            );
+
+            $this->em->persist($attribute);
+        }
+
+        if (!array_search("circumference", $attributesFound)) {
+            $attribute = new \App\Entity\ProductAttribute(
+                $product->getDetail(),
+                "circumference",
+                $wholesaleProduct->getCircumference()
+            );
+
+            $this->em->persist($attribute);
+        }
+
     }
 
 }

@@ -18,7 +18,7 @@ interface ShipmentRepositoryInterface {
      * 
      * @return ShipmentCollection
      */
-    public function findAll($limit = 1000, $offset = 0);
+    public function findAll($limit = 1000, $offset = 0, $company = null);
 
     /**
      * 
@@ -27,7 +27,7 @@ interface ShipmentRepositoryInterface {
      * 
      * @return ShipmentCollection
      */
-    public function findOpen($limit = 1000, $offset = 0);
+    public function findOpen($limit = 1000, $offset = 0, $company = null);
     
     /**
      * 
@@ -35,7 +35,7 @@ interface ShipmentRepositoryInterface {
      * 
      * @return ShipmentCollection
      */
-    public function findByOrderNumber($orderNumber);
+    public function findByOrderNumber($orderNumber, $company = null);
     
     /**
      * 
@@ -44,7 +44,7 @@ interface ShipmentRepositoryInterface {
      * 
      * @return Shipment
      */
-    public function get($orderNumber, $recordSequence = 1);
+    public function get($orderNumber, $recordSequence = 1, $company = null);
     
     /**
      * 
@@ -53,7 +53,7 @@ interface ShipmentRepositoryInterface {
      * 
      * @return ShipmentItemCollection
      */
-    public function getItems($orderNumber, $recordSequence = 1);
+    public function getItems($orderNumber, $recordSequence = 1, $company = null);
     
     /**
      * 
@@ -61,7 +61,7 @@ interface ShipmentRepositoryInterface {
      * 
      * @return ShipmentPackageCollection
      */
-    public function getPackages($orderNumber);
+    public function getPackages($orderNumber, $company = null);
     
     /**
      * 
@@ -71,7 +71,7 @@ interface ShipmentRepositoryInterface {
      * @param int $offset
      * @return ShipmentCollection
      */
-    public function findByShippingDate(DateTime $startDate, DateTime $endDate, $limit = 1000, $offset = 0);
+    public function findByShippingDate(DateTime $startDate, DateTime $endDate, $limit = 1000, $offset = 0, $company = null);
     
     /**
      * Loads shipping information for an order
@@ -79,13 +79,13 @@ interface ShipmentRepositoryInterface {
      * @param string $ucc
      * @return Shipment
      */
-    public function getByUcc($ucc);
+    public function getByUcc($ucc, $company = null);
     
     /**
      * Submits package information after shipment
      * 
      * @param ShipmentPackage $shipmentPackage
      */
-    public function submitShipmentPackage($shipmentPackage);
+    public function submitShipmentPackage($shipmentPackage, $company = null);
     
 }

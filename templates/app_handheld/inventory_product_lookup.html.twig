@@ -1,0 +1,46 @@
+{% extends 'handheld_base.html.twig' %}
+
+{% block title %}Warehouse{% endblock %}
+
+{% block body %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Product Lookup</div>
+        <div class="panel-body">
+            
+            <form class="form-inline">
+                <div class="form-group">
+                    <label class="sr-only" for="search">Search Terms</label>
+                    <div class="input-group">
+                        <input type="text" name="searchTerms" id="search" class="form-control input-lg" placeholder="Search Terms...">
+                        <span class="input-group-addon"><button type="submit" class="btn btn-sm">GO</button></span>
+                    </div>
+                </div>        
+            </form>
+
+        </div>
+    </div>
+
+    {% for product in products %}
+
+        <div class="panel panel-default">
+            <div class="panel-heading">{{ product.itemNumber }}<span class="pull-right">{{ product.warehouse }}</span></div>
+            <div class="panel-body">
+                Item Number: {{ product.itemNumber }}<br>
+                Name: {{ product.name }}<br>
+                Bin Location: {{ product.binLocation }}<br>
+                Qty. Onhand: {{ product.quantityOnHand }}
+            </div>
+        </div>
+
+    {% endfor %}
+
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#search").focus();
+        });
+    </script>
+{% endblock %}

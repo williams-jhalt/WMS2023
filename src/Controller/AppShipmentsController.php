@@ -8,22 +8,24 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 
 class AppShipmentsController extends AbstractController
 {
-    #[Route('/shipments/', name: 'shipments_index')]
+    #[Route('/shipments', name: 'shipments_index')]
     public function index(): Response
     {
         return $this->render('shipments/index.html.twig');
     }
 
     #[Route('/shipments/list', name: 'shipments_list', options: ['expose' => true])]
-    public function listAction(OrderService $service, PickerLogRepository $docRepo, Request $request): JsonResponse {
+    public function listAction(OrderService $service, PickerLogRepository $docRepo, Request $request, Session $session): JsonResponse {
         
         $cache = new FilesystemAdapter('wms', 3000);
 
+        $company = $session->get('company', $this->getParameter('app.erp.company'));
         $isPacked = $request->get('is_packed');
         $isPicked = $request->get('is_picked');
         $isShipped = $request->get('is_shipped');
@@ -33,7 +35,7 @@ class AppShipmentsController extends AbstractController
         $search = $request->get('search');
         $order = (array) $request->get('order', []);
 
-        $resultData = $cache->get('openShipments', function() use ($service, $docRepo) {
+        $resultData = $cache->get('openShipments', function() use ($service, $docRepo, $company) {
                 
             $openShipments = $service->findOpenShipments();
 
@@ -42,7 +44,7 @@ class AppShipmentsController extends AbstractController
             foreach ($openShipments as $shipment) {
 
                 $picker = $docRepo->findOneByOrderNumber($shipment->getManifestId());
-                $cartons = $service->getCartons($shipment->getOrderNumber());
+                $cartons = $service->getCartons($shipment->getOrderNumber(), $company);
 
                 $cartonCount = count($cartons);
 

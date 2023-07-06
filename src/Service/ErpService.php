@@ -25,6 +25,8 @@ class ErpService {
     private $_company;
     private $_appname;
     private $_warehouse;
+    private $_availableCompanies;
+    private $_availableWarehouses;
 
     /**
      * 
@@ -34,8 +36,10 @@ class ErpService {
      * @param string $company
      * @param string $appname
      * @param string $warehouse
+     * @param array $availableCompanies
+     * @param array $availableWarehouses
      */
-    public function __construct(string $server, string $username, string $password, string $company, string $appname, string $warehouse = "MAIN") {
+    public function __construct(string $server, string $username, string $password, string $company, string $appname, string $warehouse = "MAIN", $availableCompanies = [], $availableWarehouses = []) {
 
         $this->_cache = new FilesystemAdapter('wms', 3000);
         $this->_grantTokenId = md5("grant_token:{$server}:{$company}:{$appname}");
@@ -47,7 +51,17 @@ class ErpService {
         $this->_company = $company;
         $this->_appname = $appname;
         $this->_warehouse = $warehouse;
+        $this->_availableCompanies = $availableCompanies;
+        $this->_availableWarehouses = $availableWarehouses;
 
+    }
+
+    public function getAvailableCompanies() {
+        return $this->_availableCompanies;
+    }
+
+    public function getAvailableWarehouses() {
+        return $this->_availableWarehouses;
     }
 
     /**

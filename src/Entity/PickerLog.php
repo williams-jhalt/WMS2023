@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: "picker_log")]
 #[ORM\Entity(repositoryClass: PickerLogRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class PickerLog
 {
     #[ORM\Id]
@@ -93,5 +94,10 @@ class PickerLog
         $this->lineCount = $lineCount;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setTimestampValue() {
+        $this->timestamp = new \DateTime();
     }
 }

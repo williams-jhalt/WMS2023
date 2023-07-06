@@ -14,13 +14,30 @@ class ProductRepository extends AbstractRepository implements ProductRepositoryI
      * @param integer $offset
      * @return ProductCollection
      */
-    public function findAll($limit = 1000, $offset = 0) {
+    public function findAll($limit = 1000, $offset = 0, $company = null, $warehouse = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
+
+        if ($warehouse == null) {
+            $warehouse = $this->erp->getWarehouse();
+        } else {
+            if (array_search($warehouse, $this->erp->getAvailableWarehouses()) === false) {
+                throw new \Exception("INVALID WAREHOUSE SELECTED");
+            }
+        }
 
         $query = "FOR EACH item NO-LOCK "
-                . "WHERE item.company_it = '" . $this->erp->getCompany() . "', "
+                . "WHERE item.company_it = '{$company}', "
                 . "EACH wa_item NO-LOCK WHERE "
                 . "wa_item.company_it = item.company_it AND "
-                . "wa_item.item = item.item";
+                . "wa_item.item = item.item AND "
+                . "wa_item.warehouse = '{$warehouse}'";
 
         $fields = "item.item,"
                 . "item.descr,"
@@ -76,14 +93,31 @@ class ProductRepository extends AbstractRepository implements ProductRepositoryI
      * @param integer $offset
      * @return ProductCollection
      */
-    public function findByTextSearch($searchTerms, $limit = 1000, $offset = 0): ProductCollection {
+    public function findByTextSearch($searchTerms, $limit = 1000, $offset = 0, $company = null, $warehouse = null): ProductCollection {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
+
+        if ($warehouse == null) {
+            $warehouse = $this->erp->getWarehouse();
+        } else {
+            if (array_search($warehouse, $this->erp->getAvailableWarehouses()) === false) {
+                throw new \Exception("INVALID WAREHOUSE SELECTED");
+            }
+        }
 
         $query = "FOR EACH item NO-LOCK "
-                . "WHERE item.company_it = '{$this->erp->getCompany()}' "
+                . "WHERE item.company_it = '{$company}' "
                 . "AND item.sy_lookup MATCHES '*{$searchTerms}*', "
                 . "EACH wa_item NO-LOCK WHERE "
                 . "wa_item.company_it = item.company_it AND "
-                . "wa_item.item = item.item";
+                . "wa_item.item = item.item AND "
+                . "wa_item.warehouse = '{$warehouse}'";
 
         $fields = "item.item,"
                 . "item.descr,"
@@ -135,16 +169,33 @@ class ProductRepository extends AbstractRepository implements ProductRepositoryI
     /**
      * 
      * @param string $itemNumber
-     * @return Product
+     * @return Product|null
      */
-    public function getByItemNumber($itemNumber) {
+    public function getByItemNumber($itemNumber, $company = null, $warehouse = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
+
+        if ($warehouse == null) {
+            $warehouse = $this->erp->getWarehouse();
+        } else {
+            if (array_search($warehouse, $this->erp->getAvailableWarehouses()) === false) {
+                throw new \Exception("INVALID WAREHOUSE SELECTED");
+            }
+        }
 
         $query = "FOR EACH item NO-LOCK "
-                . "WHERE item.company_it = '{$this->erp->getCompany()}' "
+                . "WHERE item.company_it = '{$company}' "
                 . "AND item.item EQ '{$itemNumber}', "
                 . "EACH wa_item NO-LOCK WHERE "
                 . "wa_item.company_it = item.company_it AND "
-                . "wa_item.item = item.item";
+                . "wa_item.item = item.item AND "
+                . "wa_item.warehouse = '{$warehouse}'";
 
         $fields = "item.item,"
                 . "item.descr,"
@@ -200,14 +251,31 @@ class ProductRepository extends AbstractRepository implements ProductRepositoryI
      * @param int $offset
      * @return ProductCollection
      */
-    public function findCommittedItems($limit = 1000, $offset = 0) {
+    public function findCommittedItems($limit = 1000, $offset = 0, $company = null, $warehouse = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
+
+        if ($warehouse == null) {
+            $warehouse = $this->erp->getWarehouse();
+        } else {
+            if (array_search($warehouse, $this->erp->getAvailableWarehouses()) === false) {
+                throw new \Exception("INVALID WAREHOUSE SELECTED");
+            }
+        }
 
         $query = "FOR EACH item NO-LOCK "
-                . "WHERE item.company_it = '{$this->erp->getCompany()}', "
+                . "WHERE item.company_it = '{$company}', "
                 . "EACH wa_item NO-LOCK WHERE "
                 . "wa_item.company_it = item.company_it AND "
                 . "wa_item.item = item.item AND "
-                . "wa_item.qty_cmtd > 0";
+                . "wa_item.qty_cmtd > 0 AND "
+                . "wa_item.warehouse = '{$warehouse}'";
 
         $fields = "item.item,"
                 . "item.descr,"

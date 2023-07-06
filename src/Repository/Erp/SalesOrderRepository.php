@@ -84,10 +84,18 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
      * @param integer $offset
      * @return SalesOrderCollection
      */
-    public function findAll($limit = 100, $offset = 0) {
+    public function findAll($limit = 100, $offset = 0, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'O' "
                 . "USE-INDEX order";
 
@@ -100,10 +108,18 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
      * @param integer $offset
      * @return SalesOrderCollection
      */
-    public function findOpen($limit = 100, $offset = 0) {
+    public function findOpen($limit = 100, $offset = 0, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'O' "
                 . "AND oe_head.opn = 'Y' "
                 . "USE-INDEX order";
@@ -116,10 +132,18 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
      * @param string $searchTerms
      * @return SalesOrderCollection
      */
-    public function findByTextSearch($searchTerms) {
+    public function findByTextSearch($searchTerms, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'O' "
                 . "AND oe_head.sy_lookup MATCHES '*{$searchTerms}*'";
 
@@ -132,10 +156,18 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
      * @param integer $orderNumber
      * @return SalesOrder
      */
-    public function get($orderNumber) {
+    public function get($orderNumber, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'O' "
                 . "AND oe_head.order = '{$orderNumber}'";
 
@@ -203,10 +235,18 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
      * @param string $customerNumber
      * @return SalesOrder
      */
-    public function getByWebReferenceNumberAndCustomerNumber($webReferenceNumber, $customerNumber) {
+    public function getByWebReferenceNumberAndCustomerNumber($webReferenceNumber, $customerNumber, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'O' "
                 . "AND oe_head.ord_ext = '{$webReferenceNumber}' "
                 . "AND oe_head.customer = '{$customerNumber}'";
@@ -274,10 +314,18 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
      * @param integer $orderNumber
      * @return SalesOrderItemCollection
      */
-    public function getItems($orderNumber) {
+    public function getItems($orderNumber, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_line NO-LOCK "
-                . "WHERE oe_line.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_line.company_oe = '{$company}' "
                 . "AND oe_line.rec_type = 'O' "
                 . "AND oe_line.order = '{$orderNumber}'";
 
@@ -308,7 +356,23 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
      * @param SalesOrderItemCollection $items
      * @return boolean
      */
-    public function submitOrder(SalesOrder $order, SalesOrderItemCollection $items) {
+    public function submitOrder(SalesOrder $order, SalesOrderItemCollection $items, $company = null, $warehouse = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
+
+        if ($warehouse == null) {
+            $warehouse = $this->erp->getWarehouse();
+        } else {
+            if (array_search($warehouse, $this->erp->getAvailableWarehouses()) === false) {
+                throw new \Exception("INVALID WAREHOUSE SELECTED");
+            }
+        }
 
         $data = array(
             'order_ext' => $order->getWebReferenceNumber(),
@@ -324,9 +388,9 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
             's_st' => $order->getShipToState(),
             's_postal_code' => $order->getShipToZip(),
             's_country_code' => $order->getShipToCountry(),
-            'company_cu' => $this->erp->getCompany(),
-            'company_oe' => $this->erp->getCompany(),
-            'warehouse' => $this->erp->getWarehouse(),
+            'company_cu' => $company,
+            'company_oe' => $company,
+            'warehouse' => $warehouse,
             'ship_via_code' => $order->getShipViaCode(),
             'residential' => $order->isResidential()
         );
@@ -351,10 +415,10 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
                     'qty_ord' => $item->getQuantityOrdered(),
     //                'unit_price' => $erpItem->getWholesalePrice(),
                     'um_o' => $erpItem->getUnitOfMeasure(),
-                    'company_cu' => $this->erp->getCompany(),
-                    'company_it' => $this->erp->getCompany(),
-                    'company_oe' => $this->erp->getCompany(),
-                    'warehouse' => $this->erp->getWarehouse(),
+                    'company_cu' => $company,
+                    'company_it' => $company,
+                    'company_oe' => $company,
+                    'warehouse' => $warehouse,
                     'override_price' => 'no',
                     'misc_log' => array('yes')
                 );
@@ -368,13 +432,21 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
         return true;
     }
 
-    public function findByOrderDate(DateTime $startDate, DateTime $endDate, $limit = 100, $offset = 0) {
+    public function findByOrderDate(DateTime $startDate, DateTime $endDate, $limit = 100, $offset = 0, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $startDateString = $startDate->format('m/d/Y');
         $endDateString = $endDate->format('m/d/Y');
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'O' "
                 . "AND oe_head.ord_date >= $startDateString "
                 . "AND oe_head.ord_date <= $endDateString";
@@ -382,13 +454,21 @@ class SalesOrderRepository extends AbstractRepository implements SalesOrderRepos
         return $this->_find($query, $limit, $offset);
     }
 
-    public function findByCustomerNumberAndOrderDate($customerNumber, DateTime $startDate, DateTime $endDate, $limit = 100, $offset = 0) {
+    public function findByCustomerNumberAndOrderDate($customerNumber, DateTime $startDate, DateTime $endDate, $limit = 100, $offset = 0, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $startDateString = $startDate->format('m/d/Y');
         $endDateString = $endDate->format('m/d/Y');
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.customer = '{$customerNumber}' "
                 . "AND oe_head.rec_type = 'O' "
                 . "AND oe_head.ord_date >= $startDateString "

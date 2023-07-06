@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Table(name: "document_log")]
 #[ORM\Entity(repositoryClass: DocumentLogRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class DocumentLog
 {
     #[ORM\Id]
@@ -78,5 +79,10 @@ class DocumentLog
         $this->timestamp = $timestamp;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function setTimestampValue() {
+        $this->timestamp = new \DateTime();
     }
 }

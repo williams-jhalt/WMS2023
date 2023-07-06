@@ -14,7 +14,6 @@ class AppOrderWatcherController extends AbstractController
     public function index(MuffsWmsService $muffsWms, WilliamsWmsService $williamsWms): Response
     {
 
-        // TODO
         $newMuffsOrders = $muffsWms->getWeborderRepository()->getNewOrders();
         $newWilliamsOrders = $williamsWms->getWeborderRepository()->getNewOrders();
 

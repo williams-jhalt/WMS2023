@@ -14,7 +14,7 @@ interface CustomerRepositoryInterface {
      * 
      * @return CustomerCollection
      */
-    public function findAll($limit = 1000, $offset = 0);
+    public function findAll($limit = 1000, $offset = 0, $company = "");
     
     /**
      * 
@@ -24,7 +24,7 @@ interface CustomerRepositoryInterface {
      * 
      * @return CustomerCollection
      */
-    public function findByTextSearch($searchTerms, $limit = 1000, $offset = 0);
+    public function findByTextSearch($searchTerms, $limit = 1000, $offset = 0, $company = "");
     
     /**
      * 
@@ -32,6 +32,6 @@ interface CustomerRepositoryInterface {
      * 
      * @return Customer
      */
-    public function getByCustomerNumber($customerNumber);
+    public function getByCustomerNumber($customerNumber, $company = "");
 
 }

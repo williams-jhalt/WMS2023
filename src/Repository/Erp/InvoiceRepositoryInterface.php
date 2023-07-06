@@ -16,7 +16,7 @@ interface InvoiceRepositoryInterface {
      * 
      * @return InvoiceCollection
      */
-    public function findAll($limit = 1000, $offset = 0);
+    public function findAll($limit = 1000, $offset = 0, $company = null);
     
     /**
      * 
@@ -28,7 +28,7 @@ interface InvoiceRepositoryInterface {
      * @param integer $offset
      * @return InvoiceCollection
      */
-    public function findByCustomerAndDate(string $customerNumber, DateTime $startDate = null, DateTime $endDate = null, bool $consolidated = false, int $limit = 1000, int $offset = 0);
+    public function findByCustomerAndDate(string $customerNumber, DateTime $startDate = null, DateTime $endDate = null, bool $consolidated = false, int $limit = 1000, int $offset = 0, $company = null);
     
     /**
      * 
@@ -36,7 +36,7 @@ interface InvoiceRepositoryInterface {
      * 
      * @return InvoiceCollection
      */
-    public function findByOrderNumber($orderNumber);
+    public function findByOrderNumber($orderNumber, $company = null);
     
     /**
      * 
@@ -45,7 +45,7 @@ interface InvoiceRepositoryInterface {
      * 
      * @return Invoice
      */
-    public function get($orderNumber, $recordSequence = 1);
+    public function get($orderNumber, $recordSequence = 1, $company = null);
     
     /**
      * 
@@ -54,6 +54,6 @@ interface InvoiceRepositoryInterface {
      * 
      * @return InvoiceItemCollection
      */
-    public function getItems($orderNumber, $recordSequence = 1);
+    public function getItems($orderNumber, $recordSequence = 1, $company = null);
 
 }

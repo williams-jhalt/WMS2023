@@ -22,6 +22,12 @@ class ProductAttribute
     #[ORM\ManyToOne(inversedBy: 'attributes', targetEntity: ProductDetail::class)]
     private ProductDetail $detail;
 
+    public function __construct(ProductDetail $detail = null, string $name = null, string $value = null) {
+        $this->detail = $detail;
+        $this->name = $name;
+        $this->value = $value;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

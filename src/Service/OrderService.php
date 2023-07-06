@@ -64,9 +64,9 @@ class OrderService {
     /**
      * @return SalesOrder
      */
-    public function getOrder($orderNumber) {
+    public function getOrder($orderNumber, $company = null) {
 
-        $erpOrder = $this->erp->getSalesOrderRepository()->get($orderNumber);
+        $erpOrder = $this->erp->getSalesOrderRepository()->get($orderNumber, $company);
 
         $order = new SalesOrder();
 
@@ -94,18 +94,18 @@ class OrderService {
     /**
      * @return SalesOrderItem[]
      */
-    public function getOrderItems($orderNumber) {
-        $erpOrderItems = $this->erp->getSalesOrderRepository()->getItems($orderNumber);
+    public function getOrderItems($orderNumber, $company = null) {
+        $erpOrderItems = $this->erp->getSalesOrderRepository()->getItems($orderNumber, $company);
         return $erpOrderItems->getItems();        
     }
 
     /**
      * @return ShipmentPackage[]
      */
-    public function getCartons($orderNumber) {
+    public function getCartons($orderNumber, $company = null) {
 
         $repo = $this->cartonRepo;
-        $cartons = $this->erp->getShipmentRepository()->getPackages($orderNumber)->getShipmentPackages();
+        $cartons = $this->erp->getShipmentRepository()->getPackages($orderNumber, $company)->getShipmentPackages();
 
         foreach ($cartons as $carton) {
 
@@ -120,6 +120,25 @@ class OrderService {
         }
 
         return $cartons;
+    }
+
+    public function getCarton($ucc, $company = null) 
+    {
+
+        $repo = $this->erp->getShipmentRepository();
+
+        $shipment = $repo->getByUcc($ucc, $company);
+        $orderNumber = $shipment->getOrderNumber();
+        $cartons = $repo->getPackages($orderNumber, $company)->getShipmentPackages();
+
+        foreach ($cartons as $carton) {
+            if ($carton->getUcc() == $ucc) {
+                return $carton;
+            }
+        }
+
+        return null;
+
     }
 
     /**
@@ -271,7 +290,7 @@ class OrderService {
         return $order;
     }
 
-    public function findOpenOrders() {
+    public function findOpenOrders($company = null) {
 
         $limit = 1000;
         $offset = 0;
@@ -279,7 +298,7 @@ class OrderService {
         $response = [];
 
         do {
-            $orders = $this->erp->getSalesOrderRepository()->findOpen($limit, $offset)->getSalesOrders();
+            $orders = $this->erp->getSalesOrderRepository()->findOpen($limit, $offset, $company)->getSalesOrders();
             foreach ($orders as $order) {
                 $salesOrder = new SalesOrder();
                 $this->loadOrderFromErp($salesOrder, $order);
@@ -291,7 +310,7 @@ class OrderService {
         return $response;
     }
 
-    public function findOpenShipments() {
+    public function findOpenShipments($company = null) {
 
         $response = [];
 
@@ -299,7 +318,7 @@ class OrderService {
         $offset = 0;
 
         do {
-            $shipments = $this->erp->getShipmentRepository()->findOpen($limit, $offset)->getShipments();
+            $shipments = $this->erp->getShipmentRepository()->findOpen($limit, $offset, $company)->getShipments();
 
             foreach ($shipments as $shipment) {
                 $response[] = $shipment;
@@ -315,10 +334,10 @@ class OrderService {
      * 
      * @param int $orderNumber
      * @param int $recordSequence
-     * @return Shipment[]
+     * @return Shipment
      */
-    public function getShipment($orderNumber, $recordSequence = 1) {
-        return $this->erp->getShipmentRepository()->get($orderNumber, $recordSequence);
+    public function getShipment($orderNumber, $recordSequence = 1, $company = null) {
+        return $this->erp->getShipmentRepository()->get($orderNumber, $recordSequence, $company);
     }
 
     /**
@@ -327,8 +346,8 @@ class OrderService {
      * @param int $recordSequence
      * @return ShipmentItem[]
      */
-    public function getShipmentItems($orderNumber, $recordSequence = 1) {
-        return $this->erp->getShipmentRepository()->getItems($orderNumber, $recordSequence)->getItems();
+    public function getShipmentItems($orderNumber, $recordSequence = 1, $company = null) {
+        return $this->erp->getShipmentRepository()->getItems($orderNumber, $recordSequence, $company)->getItems();
     }
 
     /**
@@ -337,8 +356,8 @@ class OrderService {
      * @param SalesOrderItemCollection $items
      * @return boolean
      */
-    public function submitOrder(SalesOrder $order, SalesOrderItemCollection $items) {
-        return $this->erp->getSalesOrderRepository()->submitOrder($order, $items);
+    public function submitOrder(SalesOrder $order, SalesOrderItemCollection $items, $company = null, $warehouse = null) {
+        return $this->erp->getSalesOrderRepository()->submitOrder($order, $items, $company, $warehouse);
     }
 
 }

@@ -4,6 +4,29 @@
 # Put parameters here that don't need to change on each machine where the app is deployed
 # https://symfony.com/doc/current/best_practices.html#use-parameters-for-application-configuration
 parameters:
+    app.connectship.wsdl: "%env(CONNECTSHIP_WSDL)%"
+    app.erp.server: "%env(ERP_SERVER)%"
+    app.erp.username: "%env(ERP_USERNAME)%"
+    app.erp.password: "%env(ERP_PASSWORD)%"
+    app.erp.company: "%env(ERP_COMPANY)%"
+    app.erp.appname: "%env(ERP_APPNAME)%"
+    app.erp.warehouse: "%env(ERP_WAREHOUSE)%"
+    app.erp.available_companies: "%env(json:ERP_COMPANIES)%"
+    app.erp.available_warehouses: "%env(json:ERP_WAREHOUSES)%"
+    app.wholesale.base_url: "%env(WHOLESALE_REST_BASE_URL)%"
+    app.williams.wsdl: "%env(WILLIAMS_WMS_WSDL_URL)%"
+    app.williams.username: "%env(WILLIAMS_WMS_USERNAME)%"
+    app.williams.password: "%env(WILLIAMS_WMS_PASSWORD)%"
+    app.muffs.wsdl: "%env(MUFFS_WMS_WSDL_URL)%"
+    app.muffs.username: "%env(MUFFS_WMS_USERNAME)%"
+    app.muffs.password: "%env(MUFFS_WMS_PASSWORD)%"
+    app.dsco.ftp_host: "%env(DSCO_FTP_HOST)%"
+    app.dsco.ftp_user: "%env(DSCO_FTP_USER)%"
+    app.dsco.ftp_pass: "%env(DSCO_FTP_PASS)%"
+    app.logic_broker.ftp_host: "%env(LOGICBROKER_FTP_HOST)%"
+    app.logic_broker.ftp_user: "%env(LOGICBROKER_FTP_USER)%"
+    app.logic_broker.ftp_pass: "%env(LOGICBROKER_FTP_PASS)%"
+    app.product_url: "%env(PRODUCT_URL)%"
 
 services:
     # default configuration for services in *this* file
@@ -27,44 +50,46 @@ services:
 
     App\Service\DscoService:
         arguments:
-            $ftpHost: ""
-            $ftpUser: ""
-            $ftpPass: ""
+            $ftpHost: "%app.dsco.ftp_host%"
+            $ftpUser: "%app.dsco.ftp_user%"
+            $ftpPass: "%app.dsco.ftp_pass%"
 
     App\Service\LogicBrokerService:
         arguments:
-            $ftpHost: ""
-            $ftpUser: ""
-            $ftpPass: ""
+            $ftpHost: "%app.logic_broker.ftp_host%"
+            $ftpUser: "%app.logic_broker.ftp_user%"
+            $ftpPass: "%app.logic_broker.ftp_pass%"
 
     App\Service\ConnectshipService:
         arguments:
-            $wsdl_url: ""
+            $wsdl_url: "%app.connectship.wsdl%"
 
     App\Service\ErpService:
         arguments:
-            $server: "%env(ERP_SERVER)%"
-            $username: "%env(ERP_USERNAME)%"
-            $password: "%env(ERP_PASSWORD)%"
-            $company: "%env(ERP_COMPANY)%"
-            $appname: "%env(ERP_APPNAME)%"
-            $warehouse: "%env(ERP_WAREHOUSE)%"
+            $server: "%app.erp.server%"
+            $username: "%app.erp.username%"
+            $password: "%app.erp.password%"
+            $company: "%app.erp.company%"
+            $appname: "%app.erp.appname%"
+            $warehouse: "%app.erp.warehouse%"
+            $availableCompanies: "%app.erp.available_companies%"
+            $availableWarehouses: "%app.erp.available_warehouses%"
 
     App\Service\WholesaleService:
         arguments:
-            $wholesaleUrl: "%env(WHOLESALE_REST_BASE_URL)%"
+            $wholesaleUrl: "%app.wholesale.base_url%"
 
     App\Service\WilliamsWmsService:
         arguments:
-            $wsdl: "%env(WILLIAMS_WMS_WSDL_URL)%"
-            $username: "%env(WILLIAMS_WMS_USERNAME)%"
-            $password: "%env(WILLIAMS_WMS_PASSWORD)%"
+            $wsdl: "%app.williams.wsdl%"
+            $username: "%app.williams.username%"
+            $password: "%app.williams.password%"
 
     App\Service\MuffsWmsService:
         arguments:
-            $wsdl: "%env(MUFFS_WMS_WSDL_URL)%"
-            $username: "%env(MUFFS_WMS_USERNAME)%"
-            $password: "%env(MUFFS_WMS_PASSWORD)%"
+            $wsdl: "%app.muffs.wsdl%"
+            $username: "%app.muffs.username%"
+            $password: "%app.muffs.password%"
 
     app.menu_builder:
         class: App\Menu\Builder

@@ -14,7 +14,7 @@ interface ProductRepositoryInterface {
      * 
      * @return ProductCollection
      */
-    public function findAll($limit = 1000, $offset = 0);
+    public function findAll($limit = 1000, $offset = 0, $company = null, $warehouse = null);
     
     /**
      * 
@@ -24,7 +24,7 @@ interface ProductRepositoryInterface {
      * 
      * @return ProductCollection
      */
-    public function findByTextSearch($searchTerms, $limit = 1000, $offset = 0);
+    public function findByTextSearch($searchTerms, $limit = 1000, $offset = 0, $company = null, $warehouse = null);
     
     /**
      * 
@@ -32,7 +32,7 @@ interface ProductRepositoryInterface {
      * 
      * @return Product
      */
-    public function getByItemNumber($itemNumber);
+    public function getByItemNumber($itemNumber, $company = null, $warehouse = null);
     
     /**
      * @param integer $limit
@@ -40,6 +40,6 @@ interface ProductRepositoryInterface {
      * 
      * @return ProductCollection
      */
-    public function findCommittedItems($limit = 1000, $offset = 0);
+    public function findCommittedItems($limit = 1000, $offset = 0, $company = null, $warehouse = null);
 
 }

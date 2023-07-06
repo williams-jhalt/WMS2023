@@ -1,5 +1,9 @@
 twig:
     default_path: '%kernel.project_dir%/templates'
+    form_themes: ['bootstrap_3_horizontal_layout.html.twig']
+    globals:
+        available_companies: "%env(json:ERP_COMPANIES)%"
+        available_warehouses: "%env(json:ERP_WAREHOUSES)%"
 
 when@test:
     twig:

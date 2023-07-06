@@ -6,7 +6,7 @@
         $(document).ready(function () {
             var table = $('#shipmentsTable').DataTable({
                 responsive: true,
-                {# "processing": true, #}
+                processing: true,
                 serverSide: true,
                 ajax: Routing.generate('shipments_list')
             });
@@ -35,6 +35,8 @@
 
 
 {% block body %}
+
+    {% include 'company_selector.html.twig' %}
 
     <div class="col-lg-12">
         <h1 class="page-header">Shipments</h1>

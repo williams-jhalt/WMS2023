@@ -20,10 +20,18 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
      * @param integer $offset
      * @return ShipmentCollection
      */
-    public function findAll($limit = 1000, $offset = 0) {
+    public function findAll($limit = 1000, $offset = 0, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'S'";
 
         $fields = "adr,"
@@ -72,10 +80,18 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
      * @param integer $offset
      * @return ShipmentCollection
      */
-    public function findOpen($limit = 1000, $offset = 0) {
+    public function findOpen($limit = 1000, $offset = 0, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'S' "
                 . "AND oe_head.opn = yes";
 
@@ -124,10 +140,18 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
      * @param integer $orderNumber
      * @return ShipmentCollection
      */
-    public function findByOrderNumber($orderNumber) {
+    public function findByOrderNumber($orderNumber, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'S' "
                 . "AND oe_head.order = '{$orderNumber}'";
 
@@ -177,10 +201,18 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
      * @param integer $recordSequence
      * @return Shipment
      */
-    public function get($orderNumber, $recordSequence = 1) {
+    public function get($orderNumber, $recordSequence = 1, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'S' "
                 . "AND oe_head.order = '{$orderNumber}' AND oe_head.rec_seq = '{$recordSequence}'";
 
@@ -231,10 +263,18 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
      * @param integer $recordSequence
      * @return ShipmentItemCollection
      */
-    public function getItems($orderNumber, $recordSequence = 1) {
+    public function getItems($orderNumber, $recordSequence = 1, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_line NO-LOCK "
-                . "WHERE oe_line.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_line.company_oe = '{$company}' "
                 . "AND oe_line.rec_type = 'S' "
                 . "AND oe_line.order = '{$orderNumber}' AND oe_line.rec_seq = '{$recordSequence}'";
 
@@ -266,10 +306,18 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
      * @param integer $orderNumber
      * @return ShipmentPackageCollection
      */
-    public function getPackages($orderNumber) {
+    public function getPackages($orderNumber, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH ed_ucc128ln NO-LOCK WHERE "
-                . "ed_ucc128ln.company_oe = '" . $this->erp->getCompany() . "' "
+                . "ed_ucc128ln.company_oe = '{$company}' "
                 . "AND ed_ucc128ln.order = '{$orderNumber}'";
 
         $fields = "ed_ucc128ln.ucc,ed_ucc128ln.tracking_no";
@@ -286,7 +334,7 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
 
             if ($package->getTrackingNumber() !== null) {
                 $query2 = "FOR EACH oe_ship_pack NO-LOCK WHERE "
-                        . "oe_ship_pack.company_oe = '" . $this->erp->getCompany() . "' "
+                        . "oe_ship_pack.company_oe = '{$company}' "
                         . "AND oe_ship_pack.order = '{$orderNumber}' "
                         . "AND oe_ship_pack.tracking_no = '" . $package->getTrackingNumber() . "'";
 
@@ -312,7 +360,7 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
             }
 
             $query3 = "FOR EACH ed_ucc128pk NO-LOCK WHERE "
-                    . "ed_ucc128pk.company_oe = '" . $this->erp->getCompany() . "' "
+                    . "ed_ucc128pk.company_oe = '{$company}' "
                     . "AND ed_ucc128pk.order = '" . $orderNumber . "' "
                     . "AND ed_ucc128pk.ucc = '" . $package->getUcc() . "'";
 
@@ -380,10 +428,18 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
      * @param int $limit
      * @param int $offset
      */
-    public function findByShippingDate(DateTime $startDate, DateTime $endDate, $limit = 1000, $offset = 0) {
+    public function findByShippingDate(DateTime $startDate, DateTime $endDate, $limit = 1000, $offset = 0, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' ";
+                . "WHERE oe_head.company_oe = '{$company}' ";
         
         if ($startDate !== null) {
             $startDateStr = $startDate->format("m/d/Y");
@@ -435,17 +491,25 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
         return new ShipmentCollection($result);
     }
     
-    public function getByUcc($ucc) {
+    public function getByUcc($ucc, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new Exception("INVALID COMPANY SELECTED");
+            }
+        }
         
         $query = "FOR EACH ed_ucc128ln NO-LOCK WHERE "
-                . "ed_ucc128ln.company_oe = '" . $this->erp->getCompany() . "' "
+                . "ed_ucc128ln.company_oe = '{$company}' "
                 . "AND ed_ucc128ln.ucc = '{$ucc}'";
 
         $fields = "order";
 
         $response = $this->erp->read($query, $fields);
         
-        if (sizeof($response) < 0) {
+        if (sizeof($response) == 0) {
             throw new Exception("Package not found");
         }
         
@@ -455,8 +519,16 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
         
     }
     
-    public function submitShipmentPackage($shipmentPackage) {
-        ;
+    public function submitShipmentPackage($shipmentPackage, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
+        
     }
 
 }

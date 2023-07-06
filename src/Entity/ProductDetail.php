@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ProductDetailRepository;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\Collection;
@@ -63,6 +64,10 @@ class ProductDetail
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $updatedOn = null;
+
+    public function __construct() {
+        $this->attributes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -237,13 +242,13 @@ class ProductDetail
     public function removeAttribute(ProductAttribute $attribute) {
         if ($this->attributes->contains($attribute)) {
             $this->attributes->removeElement($attribute);
-            // set the owning side to null (unless already changed)
-            if ($attribute->getDetail() === $this) {
-                $attribute->getDetail(null);
-            }
         }
 
         return $this;
+    }
+
+    public function getAttributes() {
+        return $this->attributes;
     }
 
     public function getCreatedOn(): ?\DateTimeInterface

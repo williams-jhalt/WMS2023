@@ -28,7 +28,7 @@ class LogicBrokerHandler implements LogicBrokerHandlerInterface {
 
     /**
      *
-     * @var \ConnectshipBundle\Service\ConnectshipService
+     * @var ConnectshipService
      */
     private $cs;
 

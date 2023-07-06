@@ -13,10 +13,18 @@ class CustomerRepository extends AbstractRepository implements CustomerRepositor
      * @param integer $offset
      * @return CustomerCollection
      */
-    public function findAll($limit = 1000, $offset = 0) {
+    public function findAll($limit = 1000, $offset = 0, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH customer NO-LOCK "
-                . "WHERE customer.company_cu = '" . $this->erp->getCompany() . "'";
+                . "WHERE customer.company_cu = '{$company}'";
 
         $fields = "customer.customer,"
                 . "customer.name";
@@ -42,10 +50,18 @@ class CustomerRepository extends AbstractRepository implements CustomerRepositor
      * @param integer $offset
      * @return CustomerCollection
      */
-    public function findByTextSearch($searchTerms, $limit = 1000, $offset = 0) {
+    public function findByTextSearch($searchTerms, $limit = 1000, $offset = 0, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH customer NO-LOCK "
-                . "WHERE customer.company_cu = '{$this->erp->getCompany()}' "
+                . "WHERE customer.company_cu = '{$company}' "
                 . "AND customer.sy_lookup MATCHES '*{$searchTerms}*'";
 
         $fields = "customer.customer,"
@@ -70,10 +86,18 @@ class CustomerRepository extends AbstractRepository implements CustomerRepositor
      * @param string $customerNumber
      * @return Customer|null
      */
-    public function getByCustomerNumber($customerNumber) {
+    public function getByCustomerNumber($customerNumber, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH customer NO-LOCK "
-                . "WHERE customer.company_cu = '{$this->erp->getCompany()}' "
+                . "WHERE customer.company_cu = '{$company}' "
                 . "AND customer.customer EQ '{$customerNumber}'";
 
         $fields = "customer.customer,"

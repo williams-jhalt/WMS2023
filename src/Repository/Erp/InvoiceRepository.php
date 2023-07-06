@@ -16,10 +16,18 @@ class InvoiceRepository extends AbstractRepository implements InvoiceRepositoryI
      * @param integer $offset
      * @return InvoiceCollection
      */
-    public function findAll($limit = 1000, $offset = 0) {
+    public function findAll($limit = 1000, $offset = 0, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'I'";
 
         $fields = "adr,"
@@ -94,11 +102,18 @@ class InvoiceRepository extends AbstractRepository implements InvoiceRepositoryI
      * @param integer $offset
      * @return InvoiceCollection
      */
-    public function findByCustomerAndDate(string $customerNumber, DateTime $startDate = null, DateTime $endDate = null, bool $consolidated = false, int $limit = 1000, int $offset = 0) {
+    public function findByCustomerAndDate(string $customerNumber, DateTime $startDate = null, DateTime $endDate = null, bool $consolidated = false, int $limit = 1000, int $offset = 0, $company = null) {
 
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'I' AND "
                 . "oe_head.customer = '{$customerNumber}'";
 
@@ -185,10 +200,18 @@ class InvoiceRepository extends AbstractRepository implements InvoiceRepositoryI
      * @param integer $orderNumber
      * @return InvoiceCollection
      */
-    public function findByOrderNumber($orderNumber) {
+    public function findByOrderNumber($orderNumber, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'I' "
                 . "AND oe_head.order = '{$orderNumber}'";
 
@@ -260,10 +283,18 @@ class InvoiceRepository extends AbstractRepository implements InvoiceRepositoryI
      * @param integer $recordSequence
      * @return Invoice
      */
-    public function get($orderNumber, $recordSequence = 1) {
+    public function get($orderNumber, $recordSequence = 1, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_head NO-LOCK "
-                . "WHERE oe_head.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_head.company_oe = '{$company}' "
                 . "AND oe_head.rec_type = 'I' "
                 . "AND oe_head.order = '{$orderNumber}' AND oe_head.rec_seq = '{$recordSequence}'";
 
@@ -332,10 +363,18 @@ class InvoiceRepository extends AbstractRepository implements InvoiceRepositoryI
      * @param integer $recordSequence
      * @return InvoiceItemCollection
      */
-    public function getItems($orderNumber, $recordSequence = 1) {
+    public function getItems($orderNumber, $recordSequence = 1, $company = null) {
+
+        if ($company == null) {
+            $company = $this->erp->getCompany();
+        } else {
+            if (array_search($company, $this->erp->getAvailableCompanies()) === false) {
+                throw new \Exception("INVALID COMPANY SELECTED");
+            }
+        }
 
         $query = "FOR EACH oe_line NO-LOCK "
-                . "WHERE oe_line.company_oe = '" . $this->erp->getCompany() . "' "
+                . "WHERE oe_line.company_oe = '{$company}' "
                 . "AND oe_line.rec_type = 'I' "
                 . "AND oe_line.order = '{$orderNumber}' AND oe_line.rec_seq = '{$recordSequence}'";
 

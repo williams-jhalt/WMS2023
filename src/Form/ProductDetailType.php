@@ -25,7 +25,7 @@ class ProductDetailType extends AbstractType {
                 ->add('packageWidth', TextType::class, ['required' => false])
                 ->add('dimUnit', ChoiceType::class, [
                     'choices' => [
-                        'in' => 'in',
+                        'IN' => 'IN',
                         'cm' => 'cm',
                         'mm' => 'mm'
                     ],
@@ -34,7 +34,7 @@ class ProductDetailType extends AbstractType {
                 ->add('packageWeight', TextType::class, ['required' => false])
                 ->add('weightUnit', ChoiceType::class, [
                     'choices' => [
-                        'lbs' => 'lbs',
+                        'LB' => 'LB',
                         'oz' => 'oz',
                         'kg' => 'kg',
                         'g' => 'g'

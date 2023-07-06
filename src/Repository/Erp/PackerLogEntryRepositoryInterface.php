@@ -16,7 +16,7 @@ interface PackerLogEntryRepositoryInterface {
      * 
      * @return PackerLogEntryCollection
      */
-    public function findByStartDateAndEndDate(DateTimeInterface $startDate, DateTimeInterface $endDate, $limit = 1000, $offset = 0);
+    public function findByStartDateAndEndDate(DateTimeInterface $startDate, DateTimeInterface $endDate, $limit = 1000, $offset = 0, $company = null);
     
     /**
      * 
@@ -26,7 +26,7 @@ interface PackerLogEntryRepositoryInterface {
      * 
      * @return PackerLogEntryCollection
      */
-    public function findByUserId($userId, $limit = 1000, $offset = 0);
+    public function findByUserId($userId, $limit = 1000, $offset = 0, $company = null);
     
     /**
      * 
@@ -36,6 +36,6 @@ interface PackerLogEntryRepositoryInterface {
      * 
      * @return PackerLogEntryCollection
      */
-    public function findByUcc($ucc, $limit = 1000, $offset = 0);
+    public function findByUcc($ucc, $limit = 1000, $offset = 0, $company = null);
     
 }

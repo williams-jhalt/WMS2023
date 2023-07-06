@@ -1,0 +1,68 @@
+{% extends 'handheld_base.html.twig' %}
+
+{% block title %}Warehouse{% endblock %}
+
+{% block body %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Carton Lookup</div>
+        <div class="panel-body">
+            
+            <form class="form-inline">
+                <div class="form-group">
+                    <label class="sr-only" for="search">Search Terms</label>
+                    <div class="input-group">
+                        <input type="text" name="ucc" id="search" class="form-control input-lg" placeholder="Ucc...">
+                        <span class="input-group-addon"><button type="submit" class="btn btn-sm">GO</button></span>
+                    </div>
+                </div>        
+            </form>
+
+        </div>
+    </div>
+
+    {% if carton %}
+        <div class="panel panel-default">
+            <div class="panel-heading">UCC: {{ carton.ucc }}</div>
+            <div class="panel-body">
+                <div class="row">
+                    <div class="col-xs-6">
+                        <b>Tracking Number:</b> {{ carton.trackingNumber }}<br>
+                        <b>Freight Cost:</b> {{ carton.freightCost|format_currency('USD') }}<br>
+                        <b>Shipping Weight:</b> {{ carton.shippingWeight }}<br>
+                        <b>Ship Via:</b> {{ carton.shipViaCode }}<br>
+                        <b>Package Height:</b> {{ carton.packageHeight }}<br>
+                        <b>Package Length:</b> {{ carton.packageLength }}<br>
+                        <b>Package Width:</b> {{ carton.packageWidth }}<br>
+                        <b>Manifest Carrier:</b> {{ carton.manifestCarrier }}
+                    </div>
+                    <div class="col-xs-6">
+                        <table class="table">
+                            <thead>
+                                <th>Item Number</th>
+                                <th>Quantity</th>
+                            </thead>
+                            <tbody>
+                                {% for item in carton.items %}
+                                <tr>
+                                    <td>{{ item.itemNumber }}</td>
+                                    <td>{{ item.quantity }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    {% endif %}
+
+{% endblock %}
+
+{% block javascripts %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#search").focus();
+        });
+    </script>
+{% endblock %}

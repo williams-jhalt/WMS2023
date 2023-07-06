@@ -16,7 +16,7 @@ interface SalesOrderRepositoryInterface {
      * 
      * @return SalesOrderCollection
      */
-    public function findAll($limit = 100, $offset = 0);
+    public function findAll($limit = 100, $offset = 0, $company = null);
     
     /**
      * 
@@ -25,7 +25,7 @@ interface SalesOrderRepositoryInterface {
      * 
      * @return SalesOrderCollection
      */
-    public function findOpen($limit = 100, $offset = 0);
+    public function findOpen($limit = 100, $offset = 0, $company = null);
     
     /**
      * 
@@ -33,7 +33,7 @@ interface SalesOrderRepositoryInterface {
      * 
      * @return SalesOrderCollection
      */
-    public function findByTextSearch($searchTerms);
+    public function findByTextSearch($searchTerms, $company = null);
     
     /**
      * 
@@ -50,7 +50,7 @@ interface SalesOrderRepositoryInterface {
      * 
      * @return SalesOrder
      */
-    public function getByWebReferenceNumberAndCustomerNumber($webReferenceNumber, $customerNumber);
+    public function getByWebReferenceNumberAndCustomerNumber($webReferenceNumber, $customerNumber, $company = null);
     
     /**
      * 
@@ -58,7 +58,7 @@ interface SalesOrderRepositoryInterface {
      * 
      * @return SalesOrderItemCollection
      */
-    public function getItems($orderNumber);
+    public function getItems($orderNumber, $company = null);
     
     /**
      * 
@@ -67,7 +67,7 @@ interface SalesOrderRepositoryInterface {
      * 
      * @return boolean 
      */
-    public function submitOrder(SalesOrder $order, SalesOrderItemCollection $items);
+    public function submitOrder(SalesOrder $order, SalesOrderItemCollection $items, $company = null, $warehouse = null);
     
     /**
      * 
@@ -78,7 +78,7 @@ interface SalesOrderRepositoryInterface {
      * 
      * @return SalesOrderCollection
      */
-    public function findByOrderDate(DateTime $startDate, DateTime $endDate, $limit = 100, $offset = 0);
+    public function findByOrderDate(DateTime $startDate, DateTime $endDate, $limit = 100, $offset = 0, $company = null);
     
     /**
      * 
@@ -90,6 +90,6 @@ interface SalesOrderRepositoryInterface {
      * 
      * @return SalesOrderCollection
      */
-    public function findByCustomerNumberAndOrderDate($customerNumber, DateTime $startDate, DateTime $endDate, $limit = 100, $offset = 0);
+    public function findByCustomerNumberAndOrderDate($customerNumber, DateTime $startDate, DateTime $endDate, $limit = 100, $offset = 0, $company = null);
 
 }

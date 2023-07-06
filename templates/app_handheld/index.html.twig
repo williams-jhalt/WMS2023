@@ -4,6 +4,50 @@
 
 {% block body %}
 
-    <div>WAREHOUSE</div>
+    <div class="container">
+
+        <br>
+
+        <div class="row">
+
+            <div class="col-sm-3">
+                <a href="{{ path('app_handheld_inventory' ) }}">
+                    <div class="panel panel-default app-button">
+                        <div class="panel-body text-center">
+                            <br>
+                            <span class="glyphicon glyphicon-barcode"></span>
+                            <p>Inventory</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-sm-3">
+                <a href="{{ path('app_handheld_shipping' ) }}">
+                    <div class="panel panel-default app-button">
+                        <div class="panel-body text-center">
+                            <br>
+                            <span class="glyphicon glyphicon-plane"></span>
+                            <p>Shipping</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+            <div class="col-sm-3">
+                <a href="{{ path('homepage' ) }}">
+                    <div class="panel panel-default app-button">
+                        <div class="panel-body text-center">
+                            <br>
+                            <span class="glyphicon glyphicon-log-out"></span>
+                            <p>Exit</p>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
+        </div>
+
+    </div>
 
 {% endblock %}

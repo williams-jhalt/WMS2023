@@ -1,0 +1,65 @@
+{% extends 'handheld_base.html.twig' %}
+
+{% block title %}Warehouse{% endblock %}
+
+{% block body %}
+
+    <div class="container">
+
+        <br>
+
+    <div class="row">
+
+        <div class="col-xs-6">
+            <a href="{{ path('app_handheld_inventory_product_lookup' ) }}">
+                    <div class="panel panel-default app-button">
+                        <div class="panel-body text-center">
+                    <br>
+                    <span class="glyphicon glyphicon-search"></span>
+                    <p>Lookup</p>
+                        </div>
+                    </div>
+            </a>
+        </div>
+
+        <div class="col-xs-6">
+            <a href="{{ path('app_handheld_inventory_product_receive' ) }}">
+                    <div class="panel panel-default app-button">
+                        <div class="panel-body text-center">
+                    <br>
+                    <span class="glyphicon glyphicon-copy"></span>
+                    <p>Receive</p>
+                        </div>
+                    </div>
+            </a>
+        </div>
+
+        <div class="col-xs-6">
+            <a href="{{ path('app_handheld_inventory_product_putaway' ) }}">
+                    <div class="panel panel-default app-button">
+                        <div class="panel-body text-center">
+                    <br>
+                    <span class="glyphicon glyphicon-paste"></span>
+                    <p>Put Away</p>
+                        </div>
+                    </div>
+            </a>
+        </div>
+
+        <div class="col-xs-6">
+            <a href="{{ path('app_handheld_inventory_product_count' ) }}">
+                    <div class="panel panel-default app-button">
+                        <div class="panel-body text-center">
+                    <br>
+                    <span class="glyphicon glyphicon-plus"></span>
+                    <p>Count</p>
+                        </div>
+                    </div>
+            </a>
+        </div>
+
+    </div>
+
+    </div>
+
+{% endblock %}

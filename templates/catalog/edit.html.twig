@@ -14,6 +14,10 @@
 
                 <div class="col-lg-8">
 
+                    <h2>Details</h2>
+
+                    <hr>
+
                     {{ form_row(form.name) }}
 
                     {{ form_row(form.description) }}  
@@ -24,52 +28,24 @@
 
                     {{ form_row(form.category) }}
 
-                    <div class="row">
+                    {{ form_row(form.packageHeight) }}
 
-                        <div class="col-sm-3">
+                    {{ form_row(form.packageLength) }}
 
-                            {{ form_row(form.packageHeight) }}
-                        </div>
+                    {{ form_row(form.packageWidth) }}
 
-                        <div class="col-sm-3">
+                    {{ form_row(form.dimUnit) }}
 
-                            {{ form_row(form.packageLength) }}
+                    {{ form_row(form.packageWeight) }}
 
-                        </div>
-
-                        <div class="col-sm-3">
-
-                            {{ form_row(form.packageWidth) }}
-
-                        </div>
-
-                        <div class="col-sm-3">
-
-                            {{ form_row(form.dimUnit) }}
-
-                        </div>
-
-                    </div>
-
-                    <div class="row">
-
-                        <div class="col-sm-8">
-
-                            {{ form_row(form.packageWeight) }}
-
-                        </div>
-
-                        <div class="col-sm-4">
-
-                            {{ form_row(form.weightUnit) }}
-
-                        </div>
-
-                    </div>
+                    {{ form_row(form.weightUnit) }}
 
                     {{ form_row(form.msrp) }}
 
                     {{ form_row(form.mapPrice) }}
+
+                    <h2>Attributes</h2>
+                    <hr>
 
                     <div class="row js-attribute-wrapper"
                          data-prototype="{{ form_widget(form.attributes.vars.prototype)|e('html_attr') }}"
@@ -77,11 +53,15 @@
 
                         {% for attributeForm in form.attributes %}
 
-                            <div class="col-xs-6 js-attribute-item">
+                            <div class="col-sm-6">
+
+                            <div class="js-attribute-item">
                                 <a href="#" class="js-remove-attribute pull-right">
                                     <span class="fa fa-close"></span>
                                 </a>
                                 {{ form_row(attributeForm) }}
+                            </div>
+
                             </div>
 
                         {% endfor %}       
