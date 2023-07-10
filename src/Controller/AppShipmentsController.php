@@ -65,7 +65,7 @@ class AppShipmentsController extends AbstractController
                     $shipment->getManifestId(),
                     $shipment->getWebReferenceNumber(),
                     $shipment->getOrderDate()->format('Y-m-d'),
-                    $picker == null ? "Not Picked" : $picker->getUser(),
+                    $picker == null ? "Not Picked" : $picker->getUserName(),
                     $cartonCount > 0 ? "{$cartonCount} Cartons Packed" : "Not Packed",
                     empty($trackingNumbers) ? "Not Shipped" : $trackingNumbers
                 ];
