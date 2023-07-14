@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use App\Repository\Erp\CustomerRepository;
 use App\Repository\Erp\InvoiceRepository;
 use App\Repository\Erp\PackerLogEntryRepository;
@@ -10,58 +9,30 @@ use App\Repository\Erp\ProductRepository;
 use App\Repository\Erp\SalesOrderRepository;
 use App\Repository\Erp\ShipmentRepository;
 use Exception;
+use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class ErpService {
 
     private $_grantToken;
     private $_accessToken;
-    private $_server;
-    private $_username;
-    private $_password;
     private $_grantTime;
-    private $_cache;
     private $_grantTokenId;
     private $_accessTokenId;
-    private $_company;
-    private $_appname;
-    private $_warehouse;
-    private $_availableCompanies;
-    private $_availableWarehouses;
 
-    /**
-     * 
-     * @param string $server
-     * @param string $username
-     * @param string $password
-     * @param string $company
-     * @param string $appname
-     * @param string $warehouse
-     * @param array $availableCompanies
-     * @param array $availableWarehouses
-     */
-    public function __construct(string $server, string $username, string $password, string $company, string $appname, string $warehouse = "MAIN", $availableCompanies = [], $availableWarehouses = []) {
+    public function __construct(private ContainerBagInterface $params, private CacheInterface $cache) {
 
-        $this->_cache = new FilesystemAdapter('wms', 3000);
-        $this->_grantTokenId = md5("grant_token:{$server}:{$company}:{$appname}");
-        $this->_accessTokenId = md5("access_token:{$server}:{$company}:{$appname}");
-
-        $this->_server = $server;
-        $this->_username = $username;
-        $this->_password = $password;
-        $this->_company = $company;
-        $this->_appname = $appname;
-        $this->_warehouse = $warehouse;
-        $this->_availableCompanies = $availableCompanies;
-        $this->_availableWarehouses = $availableWarehouses;
+        $this->_grantTokenId = md5("grant_token:{$this->params->get('app.erp.server')}:{$this->params->get('app.erp.company')}:{$this->params->get('app.erp.appname')}");
+        $this->_accessTokenId = md5("access_token:{$this->params->get('app.erp.server')}:{$this->params->get('app.erp.company')}:{$this->params->get('app.erp.appname')}");
 
     }
 
     public function getAvailableCompanies() {
-        return $this->_availableCompanies;
+        return $this->params->get('app.erp.available_companies');
     }
 
     public function getAvailableWarehouses() {
-        return $this->_availableWarehouses;
+        return $this->params->get('app.erp.available_warehouses');
     }
 
     /**
@@ -72,7 +43,7 @@ class ErpService {
      */
     private function _getGrantToken($ch = null) {
 
-        return $this->_cache->get($this->_grantTokenId, function() use ($ch): string {
+        return $this->cache->get($this->_grantTokenId, function() use ($ch): string {
 
             $closeCurlWhenFinished = false;
 
@@ -81,23 +52,23 @@ class ErpService {
                 $closeCurlWhenFinished = true;
             }
 
-            curl_setopt($ch, CURLOPT_URL, $this->_server . "/distone/rest/service/authorize/grant");
+            curl_setopt($ch, CURLOPT_URL, $this->params->get('app.erp.server') . "/distone/rest/service/authorize/grant");
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/x-www-form-urlencoded'
             ));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array(
-                'client' => $this->_appname,
-                'company' => $this->_company,
-                'username' => $this->_username,
-                'password' => $this->_password
+                'client' => $this->params->get('app.erp.appname'),
+                'company' => $this->params->get('app.erp.company'),
+                'username' => $this->params->get('app.erp.username'),
+                'password' => $this->params->get('app.erp.password')
             )));
 
             $response = json_decode(curl_exec($ch));
 
             if (isset($response->_errors)) {
-                $this->_cache->delete($this->_grantTokenId);
+                $this->cache->delete($this->_grantTokenId);
                 throw new ErpServiceException($response->_errors[0]->_errorMsg, $response->_errors[0]->_errorNum); // find out the structure of ERP-ONE's errors
             }
 
@@ -120,7 +91,7 @@ class ErpService {
      */
     private function _getAccessToken($ch = null): string {
 
-        return $this->_cache->get($this->_accessTokenId, function() use ($ch): string {
+        return $this->cache->get($this->_accessTokenId, function() use ($ch): string {
 
             $closeCurlWhenFinished = false;
     
@@ -129,22 +100,22 @@ class ErpService {
                 $closeCurlWhenFinished = true;
             }
     
-            curl_setopt($ch, CURLOPT_URL, $this->_server . "/distone/rest/service/authorize/access");
+            curl_setopt($ch, CURLOPT_URL, $this->params->get('app.erp.server') . "/distone/rest/service/authorize/access");
             curl_setopt($ch, CURLOPT_HTTPHEADER, array(
                 'Content-Type: application/x-www-form-urlencoded'
             ));
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             curl_setopt($ch, CURLOPT_POST, 1);
             curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query(array(
-                'client' => $this->_appname,
-                'company' => $this->_company,
+                'client' => $this->params->get('app.erp.appname'),
+                'company' => $this->params->get('app.erp.company'),
                 'grant_token' => $this->_getGrantToken()
             )));
     
             $response = json_decode(curl_exec($ch));
     
             if (isset($response->_errors)) {
-                $this->_cache->delete($this->_accessTokenId);
+                $this->cache->delete($this->_accessTokenId);
             }
     
             if ($closeCurlWhenFinished) {
@@ -174,7 +145,7 @@ class ErpService {
             $closeCurlWhenFinished = true;
         }
 
-        curl_setopt($ch, CURLOPT_URL, $this->_server . "/distone/rest/service/data/create");
+        curl_setopt($ch, CURLOPT_URL, $this->params->get('app.erp.server') . "/distone/rest/service/data/create");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/json',
             'Authorization: ' . $this->_getAccessToken()
@@ -225,7 +196,7 @@ class ErpService {
             $closeCurlWhenFinished = true;
         }
 
-        curl_setopt($ch, CURLOPT_URL, $this->_server . "/distone/rest/service/data/read");
+        curl_setopt($ch, CURLOPT_URL, $this->params->get('app.erp.server') . "/distone/rest/service/data/read");
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Content-Type: application/x-www-form-urlencoded',
             'Authorization: ' . $this->_getAccessToken()
@@ -296,7 +267,7 @@ class ErpService {
 
         $query = http_build_query($queryData);
 
-        curl_setopt($ch, CURLOPT_URL, $this->_server . "/distone/rest/service/price/fetch?" . $query);
+        curl_setopt($ch, CURLOPT_URL, $this->params->get('app.erp.server') . "/distone/rest/service/price/fetch?" . $query);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Authorization: ' . $this->_getAccessToken()
         ));
@@ -348,7 +319,7 @@ class ErpService {
 
         $query = http_build_query($queryData);
 
-        curl_setopt($ch, CURLOPT_URL, $this->_server . "/distone/rest/service/form/fetch?" . $query);
+        curl_setopt($ch, CURLOPT_URL, $this->params->get('app.erp.server') . "/distone/rest/service/form/fetch?" . $query);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             'Authorization: ' . $this->_getAccessToken()
         ));
@@ -375,7 +346,7 @@ class ErpService {
      * @return string
      */
     public function getCompany() {
-        return $this->_company;
+        return $this->params->get('app.erp.company');
     }
 
     /**
@@ -384,7 +355,7 @@ class ErpService {
      * @return string
      */
     public function getWarehouse() {
-        return $this->_warehouse;
+        return $this->params->get('app.erp.warehouse');
     }
 
     /**

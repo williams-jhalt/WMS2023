@@ -85,7 +85,7 @@ class OrderService {
             }
             
         } catch (\Exception $e) {
-            
+            // couldn't find a weborder
         }
 
         return $order;

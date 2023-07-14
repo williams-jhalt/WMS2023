@@ -64,16 +64,16 @@ services:
         arguments:
             $wsdl_url: "%app.connectship.wsdl%"
 
-    App\Service\ErpService:
-        arguments:
-            $server: "%app.erp.server%"
-            $username: "%app.erp.username%"
-            $password: "%app.erp.password%"
-            $company: "%app.erp.company%"
-            $appname: "%app.erp.appname%"
-            $warehouse: "%app.erp.warehouse%"
-            $availableCompanies: "%app.erp.available_companies%"
-            $availableWarehouses: "%app.erp.available_warehouses%"
+    # App\Service\ErpService:
+    #     arguments:
+    #         $server: "%app.erp.server%"
+    #         $username: "%app.erp.username%"
+    #         $password: "%app.erp.password%"
+    #         $company: "%app.erp.company%"
+    #         $appname: "%app.erp.appname%"
+    #         $warehouse: "%app.erp.warehouse%"
+    #         $availableCompanies: "%app.erp.available_companies%"
+    #         $availableWarehouses: "%app.erp.available_warehouses%"
 
     App\Service\WholesaleService:
         arguments:
