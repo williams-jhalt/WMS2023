@@ -4,16 +4,16 @@ namespace App\Service;
 
 use DateTime;
 use App\Model\Wms\Weborder;
-use function GuzzleHttp\json_encode;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 class ReportService {
 
-    private $orderService;
-    private $productService;
 
-    public function __construct(OrderService $orderService, ProductService $productService) {
-        $this->orderService = $orderService;
-        $this->productService = $productService;
+    public function __construct(
+        private OrderService $orderService, 
+        private ProductService $productService,
+        #[Autowire('%kernel.project_dir%/public/data')]
+        private $dataDir) {
     }
 
     public function generateReports() {
@@ -105,7 +105,11 @@ class ReportService {
 
         // divide by number of weeks
         foreach ($numberOfOrders as $key => $value) {
-            $avgNumberOfOrders[$key] = $value / count($weeks);
+            if (count($weeks) > 0) {
+                $avgNumberOfOrders[$key] = $value / count($weeks);
+            } else {
+                $avgNumberOfOrders[$key] = 0;
+            }
         }
 
         return $avgNumberOfOrders;
@@ -134,7 +138,11 @@ class ReportService {
         }
 
         foreach ($ordersPerHour as $key => $value) {
-            $ordersPerHour[$key] = $value / count($days);
+            if (count($days) > 0) {
+                $ordersPerHour[$key] = $value / count($days);
+            } else {
+                $ordersPerHour[$key] = 0;
+            }
         }
 
         return $ordersPerHour;
@@ -250,7 +258,7 @@ class ReportService {
             $avgDaysToShip[$i]['williams'] = round($williamsAvgDaysToShip[$day], 2);
         }
 
-        file_put_contents(__DIR__ . '/../../../public/data/avgDaysToShip.json', json_encode($avgDaysToShip));
+        file_put_contents($this->dataDir . '/avgDaysToShip.json', json_encode($avgDaysToShip));
         // end days to ship
         // begin average number of orders
         $williamsAvgNumberOfOrders = $this->calculateAverageNumberOfOrders($williamsOrders);
@@ -272,7 +280,7 @@ class ReportService {
             $avgOrdersPerDay[$i]['williams'] = $williamsAvgNumberOfOrders[$day];
         }
 
-        file_put_contents(__DIR__ . '/../../../public/data/avgOrdersPerDay.json', json_encode($avgOrdersPerDay));
+        file_put_contents($this->dataDir . '/avgOrdersPerDay.json', json_encode($avgOrdersPerDay));
         // end average number of orders
         // begin orders per hour
         $williamsOrdersPerHour = $this->calculateOrdersPerHour($williamsOrders);
@@ -288,7 +296,7 @@ class ReportService {
             ];
         }
 
-        file_put_contents(__DIR__ . '/../../../public/data/ordersPerHour.json', json_encode($ordersPerHour));
+        file_put_contents($this->dataDir . '/ordersPerHour.json', json_encode($ordersPerHour));
         // end orders per hour
         // begin shipping methods
         $williamsShippingMethods = $this->calculateOrdersByRequestedShippingMethod($williamsOrders);
@@ -315,13 +323,13 @@ class ReportService {
             ];
         }
 
-        file_put_contents(__DIR__ . '/../../../public/data/shippingMethods.json', json_encode($shippingMethodData));
+        file_put_contents($this->dataDir . '/shippingMethods.json', json_encode($shippingMethodData));
         // end shipping methods
         // begin top products
         $muffsTopProducts = $this->calculateTopSellingProducts($muffsOrders);
         $williamsTopProducts = $this->calculateTopSellingProducts($williamsOrders);
 
-        file_put_contents(__DIR__ . '/../../../public/data/products.json', json_encode([
+        file_put_contents($this->dataDir . '/products.json', json_encode([
             'muffs' => $muffsTopProducts,
             'williams' => $williamsTopProducts
         ]));
