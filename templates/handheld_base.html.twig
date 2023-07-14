@@ -86,9 +86,10 @@
 
         <nav class="navbar navbar-default navbar-fixed-bottom">
             <div class="container-fluid">
-                    <ul class="nav navbar-nav">
-                        <li><a href="{{ path('app_handheld') }}">Home</a></li>
-                    </ul>
+                <ul class="nav navbar-nav">
+                    <li><a href="{{ path('app_handheld') }}">Home</a></li>                        
+                </ul>
+                    {% include 'handheld_company_selector.html.twig' %}
             </div>
         </nav>
         

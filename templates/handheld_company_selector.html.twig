@@ -1,0 +1,18 @@
+<form class="navbar-form" action="{{ path('change_company_and_warehouse') }}" method="GET">
+    <div class="form-group">
+        <label for="company">Company</label>
+        <select name="company" class="form-control" id="company" onchange="this.form.submit();">
+            {% for code in available_companies %}
+            <option value="{{ code }}" {% if app.session.get('company') == code %}selected="true"{% endif %}>{{ code }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="form-group">
+        <label for="warehouse">Warehouse</label>
+        <select name="warehouse" class="form-control" id="warehouse" onchange="this.form.submit();">
+            {% for code in available_warehouses %}
+            <option value="{{ code }}" {% if app.session.get('warehouse') == code %}selected="true"{% endif %}>{{ code }}</option>
+            {% endfor %}
+        </select>
+    </div>
+</form>
