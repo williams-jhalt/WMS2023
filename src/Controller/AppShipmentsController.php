@@ -10,7 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class AppShipmentsController extends AbstractController
 {
@@ -21,10 +22,14 @@ class AppShipmentsController extends AbstractController
     }
 
     #[Route('/shipments/list', name: 'shipments_list', options: ['expose' => true])]
-    public function listAction(OrderService $service, PickerLogRepository $docRepo, Request $request, Session $session): JsonResponse {
+    public function listAction(
+        OrderService $service, 
+        PickerLogRepository $docRepo, 
+        Request $request, 
+        Session $session, 
+        CacheInterface $cache
+        ): JsonResponse {
         
-        $cache = new FilesystemAdapter('wms', 3000);
-
         $company = $session->get('company', $this->getParameter('app.erp.company'));
         $isPacked = $request->get('is_packed');
         $isPicked = $request->get('is_picked');
@@ -35,7 +40,10 @@ class AppShipmentsController extends AbstractController
         $search = $request->get('search');
         $order = (array) $request->get('order', []);
 
-        $resultData = $cache->get('openShipments', function() use ($service, $docRepo, $company) {
+        $cacheId = "openShipments:$company";
+
+        $resultData = $cache->get($cacheId, function(ItemInterface $item) use ($service, $docRepo, $company) {
+            $item->expiresAfter(3600);
                 
             $openShipments = $service->findOpenShipments();
 

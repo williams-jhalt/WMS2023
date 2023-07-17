@@ -42,6 +42,12 @@
                     <td>
                         <table class="table table-bordered table-condensed table-striped">
                             <tbody>
+                                {% if carton.items is not empty %}
+                                <tr>
+                                    <th>Packed By</th>
+                                    <td>{{ carton.items[0].userId }}</td>
+                                </tr>
+                                {% endif %}
                                 <tr>
                                     <th>Tracking Number</th>
                                     <td>{{ carton.trackingNumber }}</td>
