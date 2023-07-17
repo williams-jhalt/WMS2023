@@ -16,7 +16,7 @@ class LogicBrokerOrderStatus
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name: "logicbroker_key", length: 255)]
+    #[ORM\Column(name: "logicbroker_key", length: 255, unique: true)]
     private ?string $logicBrokerKey = null;
 
     #[ORM\Column(name: "link_key", length: 255, nullable: true)]
@@ -28,8 +28,8 @@ class LogicBrokerOrderStatus
     #[ORM\Column(name: "document_date", type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $documentDate = null;
 
-    #[ORM\Column(name: "order_date", length: 255)]
-    private ?string $orderDate = null;
+    #[ORM\Column(name: "order_date", type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $orderDate = null;
 
     #[ORM\Column(name: "partner_po", length: 255)]
     private ?string $partnerPO = null;
@@ -99,12 +99,12 @@ class LogicBrokerOrderStatus
         return $this;
     }
 
-    public function getOrderDate(): ?DateTime
+    public function getOrderDate(): ?\DateTimeInterface
     {
         return $this->orderDate;
     }
 
-    public function setOrderDate(DateTime $orderDate): static
+    public function setOrderDate(?\DateTimeInterface $orderDate): static
     {
         $this->orderDate = $orderDate;
 

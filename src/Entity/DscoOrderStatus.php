@@ -15,7 +15,7 @@ class DscoOrderStatus
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(name: "dsco_key", length: 255)]
+    #[ORM\Column(name: "dsco_key", length: 255, unique: true)]
     private ?string $logicBrokerKey = null;
 
     #[ORM\Column(name: "link_key", length: 255, nullable: true)]
