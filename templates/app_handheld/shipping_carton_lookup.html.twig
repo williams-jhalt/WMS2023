@@ -28,7 +28,7 @@
                 <div class="row">
                     <div class="col-xs-6">
                         <b>Tracking Number:</b> {{ carton.trackingNumber }}<br>
-                        <b>Freight Cost:</b> {{ carton.freightCost|format_currency('USD') }}<br>
+                        <b>Freight Cost:</b> {% if carton.freightCost %}{{ carton.freightCost|format_currency('USD') }}{% endif %}<br>
                         <b>Shipping Weight:</b> {{ carton.shippingWeight }}<br>
                         <b>Ship Via:</b> {{ carton.shipViaCode }}<br>
                         <b>Package Height:</b> {{ carton.packageHeight }}<br>

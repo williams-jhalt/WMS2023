@@ -84,15 +84,22 @@
 
         </div>  #}
 
-        <nav class="navbar navbar-default navbar-fixed-bottom">
-            <div class="container-fluid">
-                <ul class="nav navbar-nav">
-                    <li><a href="{{ path('app_handheld') }}">Home</a></li>                        
-                </ul>
-                    {% include 'handheld_company_selector.html.twig' %}
+        <nav class="navbar navbar-default navbar-bottom">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="{{ path('app_handheld') }}">Home</a>
+            </div>
+
+            <div class="collapse navbar-collapse">
+                {% include 'handheld_company_selector.html.twig' %}
             </div>
         </nav>
-        
+
         <div id="main-panel" class="container-fluid">
             <div class="row">
                 {% for label, messages in app.flashes %}
