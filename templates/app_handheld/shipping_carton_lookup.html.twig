@@ -27,7 +27,7 @@
             <div class="panel-body">
                 <div class="row">
                     <div class="col-md-6">
-                        <b>Packed By:</b> {{ carton.userId }}<br>
+                        {% if carton.items is not empty %}<b>Packed By:</b> {{ carton.items[0].userId }}<br>{% endif %}
                         <b>Tracking Number:</b> {{ carton.trackingNumber }}<br>                        
                         <b>Freight Cost:</b> {% if carton.freightCost %}{{ carton.freightCost|format_currency('USD') }}{% endif %}<br>
                         <b>Shipping Weight:</b> {{ carton.shippingWeight }}<br>
@@ -42,12 +42,14 @@
                             <thead>
                                 <th>Item Number</th>
                                 <th>Quantity</th>
+                                <th>Packed By</th>
                             </thead>
                             <tbody>
                                 {% for item in carton.items %}
                                 <tr>
                                     <td>{{ item.itemNumber }}</td>
                                     <td>{{ item.quantity }}</td>
+                                    <td>{{ item.userId }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
