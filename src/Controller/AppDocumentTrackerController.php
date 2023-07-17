@@ -66,7 +66,7 @@ class AppDocumentTrackerController extends AbstractController
     #[Route('/document-tracker/list', name: 'document_tracker_list')]
     public function listAction(Request $request, DocumentLogRepository $repo): Response
     {
-        $scans = $repo->findBy([], ['timestamp' => 'desc']);
+        $scans = $repo->findBy([], ['timestamp' => 'desc'], 50);
 
         return $this->render('document-tracker/list.html.twig', [
             'scans' => $scans
