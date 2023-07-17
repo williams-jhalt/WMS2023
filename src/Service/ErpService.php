@@ -11,12 +11,10 @@ use App\Repository\Erp\ShipmentRepository;
 use Exception;
 use Symfony\Component\DependencyInjection\ParameterBag\ContainerBagInterface;
 use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 
 class ErpService {
 
-    private $_grantToken;
-    private $_accessToken;
-    private $_grantTime;
     private $_grantTokenId;
     private $_accessTokenId;
 
@@ -43,7 +41,8 @@ class ErpService {
      */
     private function _getGrantToken($ch = null) {
 
-        return $this->cache->get($this->_grantTokenId, function() use ($ch): string {
+        return $this->cache->get($this->_grantTokenId, function(ItemInterface $item) use ($ch): string {
+            $item->expiresAfter(3600);
 
             $closeCurlWhenFinished = false;
 
@@ -68,6 +67,7 @@ class ErpService {
             $response = json_decode(curl_exec($ch));
 
             if (isset($response->_errors)) {
+                $this->cache->delete($this->_accessTokenId);
                 $this->cache->delete($this->_grantTokenId);
                 throw new ErpServiceException($response->_errors[0]->_errorMsg, $response->_errors[0]->_errorNum); // find out the structure of ERP-ONE's errors
             }
@@ -91,7 +91,8 @@ class ErpService {
      */
     private function _getAccessToken($ch = null): string {
 
-        return $this->cache->get($this->_accessTokenId, function() use ($ch): string {
+        return $this->cache->get($this->_accessTokenId, function(ItemInterface $item) use ($ch): string {
+            $item->expiresAfter(3600);
 
             $closeCurlWhenFinished = false;
     
@@ -116,6 +117,8 @@ class ErpService {
     
             if (isset($response->_errors)) {
                 $this->cache->delete($this->_accessTokenId);
+                $this->cache->delete($this->_grantTokenId);
+                throw new ErpServiceException($response->_errors[0]->_errorMsg, $response->_errors[0]->_errorNum); // find out the structure of ERP-ONE's errors
             }
     
             if ($closeCurlWhenFinished) {
