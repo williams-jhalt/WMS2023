@@ -26,7 +26,7 @@
             <div class="panel-heading">UCC: {{ carton.ucc }}</div>
             <div class="panel-body">
                 <div class="row">
-                    <div class="col-xs-6">
+                    <div class="col-md-6">
                         <b>Tracking Number:</b> {{ carton.trackingNumber }}<br>
                         <b>Freight Cost:</b> {% if carton.freightCost %}{{ carton.freightCost|format_currency('USD') }}{% endif %}<br>
                         <b>Shipping Weight:</b> {{ carton.shippingWeight }}<br>
@@ -36,7 +36,7 @@
                         <b>Package Width:</b> {{ carton.packageWidth }}<br>
                         <b>Manifest Carrier:</b> {{ carton.manifestCarrier }}
                     </div>
-                    <div class="col-xs-6">
+                    <div class="col-md-6">
                         <table class="table">
                             <thead>
                                 <th>Item Number</th>
