@@ -98,7 +98,7 @@ class AppPickerLogController extends AbstractController
     public function listAction(Request $request, PickerLogRepository $repo): Response
     {
 
-        $scans = $repo->findBy([], ['timestamp' => 'desc']);
+        $scans = $repo->findBy([], ['timestamp' => 'desc'], 50);
 
         return $this->render('picker-log/list.html.twig', [
             'scans' => $scans
