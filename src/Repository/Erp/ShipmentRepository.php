@@ -364,7 +364,7 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
                     . "AND ed_ucc128pk.order = '" . $orderNumber . "' "
                     . "AND ed_ucc128pk.ucc = '" . $package->getUcc() . "'";
 
-            $fields3 = "ed_ucc128pk.item,ed_ucc128pk.qty_shp";
+            $fields3 = "ed_ucc128pk.item,ed_ucc128pk.qty_shp,ed_ucc128pk.user_id";
 
             $result3 = $this->erp->read($query3, $fields3);
 
@@ -375,6 +375,7 @@ class ShipmentRepository extends AbstractRepository implements ShipmentRepositor
                 $item2 = new ShipmentPackageItem();
                 $item2->setItemNumber($uccpk->ed_ucc128pk_item);
                 $item2->setQuantity($uccpk->ed_ucc128pk_qty_shp);
+                $item2->setUserId($uccpk->ed_ucc128pk_user_id);
 
                 $items[] = $item2;
             }

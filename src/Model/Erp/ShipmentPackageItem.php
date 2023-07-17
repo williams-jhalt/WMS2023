@@ -18,6 +18,12 @@ class ShipmentPackageItem {
      * @var integer
      */
     protected $quantity;
+    
+    /**
+     * @JMS\Type("string")
+     * @var integer
+     */
+    protected $userId;
 
     /**
      * 
@@ -54,5 +60,25 @@ class ShipmentPackageItem {
         $this->quantity = $quantity;
         return $this;
     }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getUserId() {
+        return $this->userId;
+    }
+
+    /**
+     * 
+     * @param string $userId
+     * @return ShipmentPackageItem
+     */
+    public function setUserId($userId) {
+        $this->userId = $userId;
+        return $this;
+    }
+
+
 
 }
