@@ -45,7 +45,7 @@ class AppShipmentsController extends AbstractController
         $resultData = $cache->get($cacheId, function(ItemInterface $item) use ($service, $docRepo, $company) {
             $item->expiresAfter(3600);
                 
-            $openShipments = $service->findOpenShipments();
+            $openShipments = $service->findOpenShipments($company);
 
             $resultData = [];
 
