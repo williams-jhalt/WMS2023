@@ -8,7 +8,8 @@
                 responsive: true,
                 processing: true,
                 serverSide: true,
-                ajax: Routing.generate('shipments_list')
+                ajax: Routing.generate('shipments_list'),
+                order: [[ 2, 'desc' ]]
             });
             
             var isPackedChecked = false;
