@@ -35,6 +35,31 @@
     <table class="table table-bordered">
         <tbody>
             <tr>
+                <th>Customer Number</th>
+                <td>{{ order.customerNumber }}</td>
+            </tr>
+            <tr>
+                <th>Shipping Address</th>
+                <td>   
+                    <address>
+                        {{ order.shipToName }}<br>
+                        {{ order.shipToAddress1 }}<br>
+                        {% if order.shipToAddress2 %}
+                        {{ order.shipToAddress2 }}<br>
+                        {% endif %}
+                        {% if order.shipToAddress3 %}
+                        {{ order.shipToAddress3 }}<br>
+                        {% endif %}
+                        {{ order.shipToCity }}, {{ order.shipToState }} {{ order.shipToZip }}<br>
+                        {{ order.shipToCountry }}
+                    </address>
+                </td>
+            </tr>
+            <tr>
+                <th>Ship Via</th>
+                <td>{{ order.shipViaCode }}</td>
+            </tr>
+            <tr>
                 <th>Total Volume</th>
                 <td>{{ order.totalVolume }} cu in</td>
             </tr>
