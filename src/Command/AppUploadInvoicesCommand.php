@@ -34,15 +34,15 @@ class AppUploadInvoicesCommand extends Command
     protected function execute(InputInterface $input, OutputInterface $output): int {
 
         if ($input->hasArgument('startDate')) {
-            $startDate = new DateTime($input->getArgument('startDate'));
+            $startDate = new \DateTime($input->getArgument('startDate'));
         } else {
-            $startDate = new DateTime("yesterday");
+            $startDate = new \DateTime("yesterday");
         }
 
         if ($input->hasArgument('endDate')) {
-            $endDate = new DateTime($input->getArgument('endDate'));
+            $endDate = new \DateTime($input->getArgument('endDate'));
         } else {
-            $endDate = new DateTime("tomorrow");
+            $endDate = new \DateTime("tomorrow");
         }
 
         $service = $this->exportService;

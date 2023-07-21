@@ -70,7 +70,7 @@ class OrderService {
 
         $order = new SalesOrder();
 
-        $this->loadOrderFromErp($order, $erpOrder);
+        $this->loadOrderFromErp($order, $erpOrder, $company);
 
         try {
 
@@ -263,7 +263,7 @@ class OrderService {
         return $order;
     }
 
-    private function loadOrderFromErp(SalesOrder $order, SalesOrder2 $erpOrder) {
+    private function loadOrderFromErp(SalesOrder $order, SalesOrder2 $erpOrder, string $company = null) {
 
         $order->setCustomerNumber($erpOrder->getCustomerNumber())
                 ->setCustomerPurchaseOrder($erpOrder->getCustomerPurchaseOrder())
@@ -285,7 +285,7 @@ class OrderService {
                 ->setStatus($erpOrder->getStatus())
                 ->setWebReferenceNumber($erpOrder->getWebReferenceNumber());
 
-        $order->setCartons($this->getCartons($order->getOrderNumber()));
+        $order->setCartons($this->getCartons($order->getOrderNumber(), $company));
 
         return $order;
     }
