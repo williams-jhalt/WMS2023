@@ -10,7 +10,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class AppCubiscanController extends AbstractController
 {
 
-    #[Route('/cubiscan', name: 'cubiscan_post', method: 'POST')]
+    #[Route('/cubiscan', name: 'cubiscan_post', methods: ['POST'])]
     public function postAction(Request $request)
     {
         if ($request->isMethod("POST")) {
