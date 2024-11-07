@@ -14,7 +14,6 @@ class AppCubiscanController extends AbstractController
     #[Route('/cubiscan', name: 'cubiscan_post', methods: ['POST'])]
     public function postAction(Request $request, LoggerInterface $logger)
     {
-        if ($request->isMethod("POST")) {
             $data = json_decode($request->getContent(), true);
 
             $logger->info($request->getContent());
@@ -73,8 +72,6 @@ class AppCubiscanController extends AbstractController
                 return new JsonResponse($result);
             }
 
-            return new JsonResponse(['Error' => "Did not post"]);
-
             /*Carton Data Post packet example 
             {
             "Command":"Carton Data Post",
@@ -110,6 +107,7 @@ class AppCubiscanController extends AbstractController
             "Sequence":1234,
             "StatusCode":1,
             "Message":"Error: CartonID not found",*/
-        }
+
+        return new JsonResponse(['Error' => "Did not post"]);
     }
 }
