@@ -27,6 +27,8 @@ parameters:
     app.logic_broker.ftp_user: "%env(LOGICBROKER_FTP_USER)%"
     app.logic_broker.ftp_pass: "%env(LOGICBROKER_FTP_PASS)%"
     app.product_url: "%env(PRODUCT_URL)%"
+    app.deposco.user: "%env(DEPOSCO_USER)%"
+    app.deposco.pass: "%env(DEPOSCO_PASS)%"
 
 services:
     # default configuration for services in *this* file

@@ -21,8 +21,8 @@ class AppCubiscanController extends AbstractController
 
             if ($data['Command'] == "Carton Data Post") {
 
-                $username = $request->headers->get('php-auth-user');
-                $password = $request->headers->get('php-auth-pw');
+                $username = $this->getParameter('app.deposco.user');
+                $password = $this->getParameter('app.deposco.pass');
 
                 $logger->info("Logging in with username {username}", [
                     'username' => $username
