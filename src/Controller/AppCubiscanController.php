@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -11,17 +12,27 @@ class AppCubiscanController extends AbstractController
 {
 
     #[Route('/cubiscan', name: 'cubiscan_post', methods: ['POST'])]
-    public function postAction(Request $request)
+    public function postAction(Request $request, LoggerInterface $logger)
     {
         if ($request->isMethod("POST")) {
             $data = json_decode($request->getContent(), true);
+
+            $logger->info($request->getContent());
 
             if ($data['Command'] == "Carton Data Post") {
 
                 $username = $request->headers->get('php-auth-user');
                 $password = $request->headers->get('php-auth-pw');
 
+                $logger->info("Logging in with username {username}", [
+                    'username' => $username
+                ]);
+
                 $url = "https://releasesupport.deposco.com/integration/WTC/containers/" . $data['CartonID'];
+
+                $logger->info("Using url {url}", [
+                    'url' => $url
+                ]);
 
                 $auth = base64_encode("{$username}:{$password}");
 
@@ -55,8 +66,14 @@ class AppCubiscanController extends AbstractController
                 $context = stream_context_create($options);
                 $result = file_get_contents($url, false, $context);
 
+                $logger->info("Server returned {result}", [
+                    'result' => $result
+                ]);
+
                 return new JsonResponse($result);
             }
+
+            return new JsonResponse(['Error' => "Did not post"]);
 
             /*Carton Data Post packet example 
             {
