@@ -18,8 +18,6 @@ class AppCubiscanController extends AbstractController
 
             $logger->info($request->getContent());
 
-            if ($data['Command'] == "Carton Data Post") {
-
                 $username = $this->getParameter('app.deposco.user');
                 $password = $this->getParameter('app.deposco.pass');
 
@@ -27,7 +25,7 @@ class AppCubiscanController extends AbstractController
                     'username' => $username
                 ]);
 
-                $url = "https://releasesupport.deposco.com/integration/WTC/containers/" . $data['CartonID'];
+                $url = "https://api.deposco.com/integration/WTC/containers/" . $data['CartonID'];
 
                 $logger->info("Using url {url}", [
                     'url' => $url
@@ -70,7 +68,6 @@ class AppCubiscanController extends AbstractController
                 ]);
 
                 return new JsonResponse($result);
-            }
 
             /*Carton Data Post packet example 
             {
